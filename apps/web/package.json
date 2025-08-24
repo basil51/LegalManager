@@ -1,0 +1,35 @@
+{
+  "name": "@legal/web",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint . --max-warnings=0 || true",
+    "format": "prettier -w . || true"
+  },
+  "dependencies": {
+    "@formatjs/icu-messageformat-parser": "^2.11.2",
+    "axios": "^1.7.2",
+    "date-fns": "^4.1.0",
+    "next": "14.2.15",
+    "next-intl": "3.20.0",
+    "pdfjs-dist": "^5.4.54",
+    "react": "18.3.1",
+    "react-big-calendar": "^1.19.4",
+    "react-dom": "18.3.1"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3",
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-big-calendar": "^1.16.2",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "15.5.0",
+    "tailwindcss": "^4",
+    "typescript": "^5"
+  }
+}
