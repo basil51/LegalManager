@@ -13,7 +13,7 @@ export class CasesService {
   ) {}
 
   async create(createCaseDto: any, tenantId: string): Promise<Case> {
-    return this.tenantContextService.withTenantContext(tenantId, async () => {
+    return await this.tenantContextService.withTenantContext<Case>(tenantId, async (): Promise<Case> => {
       // Convert date strings to Date objects if provided
       const processedDto = {
         ...createCaseDto,
@@ -26,7 +26,8 @@ export class CasesService {
       };
       
       const caseEntity = this.casesRepository.create(processedDto);
-      return this.casesRepository.save(caseEntity);
+      const savedCase = await this.casesRepository.save(caseEntity) as unknown as Case;
+      return savedCase;
     });
   }
 
@@ -75,9 +76,30 @@ export class CasesService {
     });
   }
 
-  async update(id: string, updateCaseDto: Partial<Case>, tenantId: string): Promise<Case | null> {
-    return this.tenantContextService.withTenantContext(tenantId, async () => {
-      await this.casesRepository.update(id, updateCaseDto);
+  async update(id: string, updateCaseDto: any, tenantId: string): Promise<Case | null> {
+    return await this.tenantContextService.withTenantContext(tenantId, async () => {
+      // Convert date strings to Date objects if provided
+      const processedDto: any = { ...updateCaseDto };
+      if (processedDto.filing_date) {
+        processedDto.filing_date = new Date(processedDto.filing_date);
+      }
+      if (processedDto.hearing_date) {
+        processedDto.hearing_date = new Date(processedDto.hearing_date);
+      }
+      if (processedDto.clientId) {
+        processedDto.client = { id: processedDto.clientId };
+        delete processedDto.clientId;
+      }
+      if (processedDto.assignedLawyerId) {
+        processedDto.assigned_lawyer = { id: processedDto.assignedLawyerId };
+        delete processedDto.assignedLawyerId;
+      }
+      if (processedDto.courtId) {
+        processedDto.court = { id: processedDto.courtId };
+        delete processedDto.courtId;
+      }
+      
+      await this.casesRepository.update(id, processedDto);
       return this.findOne(id, tenantId);
     });
   }

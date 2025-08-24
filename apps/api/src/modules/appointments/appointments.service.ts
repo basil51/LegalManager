@@ -19,7 +19,7 @@ export class AppointmentsService {
   ) {}
 
   async create(createAppointmentDto: any, tenantId: string): Promise<Appointment> {
-    return this.tenantContextService.withTenantContext(tenantId, async () => {
+    return await this.tenantContextService.withTenantContext<Appointment>(tenantId, async (): Promise<Appointment> => {
       // Convert date string to Date object and handle relationships
       const processedDto = {
         ...createAppointmentDto,
@@ -31,7 +31,7 @@ export class AppointmentsService {
       };
       
       const appointment = this.appointmentsRepository.create(processedDto);
-      const savedAppointment = await this.appointmentsRepository.save(appointment);
+      const savedAppointment = await this.appointmentsRepository.save(appointment) as unknown as Appointment;
       
       // Create default reminder (15 minutes before)
       await this.createDefaultReminder(savedAppointment, tenantId);
@@ -123,9 +123,31 @@ export class AppointmentsService {
     });
   }
 
-  async update(id: string, updateAppointmentDto: Partial<Appointment>, tenantId: string): Promise<Appointment | null> {
-    return this.tenantContextService.withTenantContext(tenantId, async () => {
-      await this.appointmentsRepository.update(id, updateAppointmentDto);
+  async update(id: string, updateAppointmentDto: any, tenantId: string): Promise<Appointment | null> {
+    return await this.tenantContextService.withTenantContext(tenantId, async () => {
+      // Convert date string to Date object if provided and handle relationships
+      const processedDto: any = { ...updateAppointmentDto };
+      if (processedDto.scheduled_at) {
+        processedDto.scheduled_at = new Date(processedDto.scheduled_at);
+      }
+      if (processedDto.lawyerId) {
+        processedDto.lawyer = { id: processedDto.lawyerId };
+        delete processedDto.lawyerId;
+      }
+      if (processedDto.clientId) {
+        processedDto.client = { id: processedDto.clientId };
+        delete processedDto.clientId;
+      } else if (processedDto.clientId === null) {
+        processedDto.client = null;
+      }
+      if (processedDto.caseId) {
+        processedDto.case = { id: processedDto.caseId };
+        delete processedDto.caseId;
+      } else if (processedDto.caseId === null) {
+        processedDto.case = null;
+      }
+      
+      await this.appointmentsRepository.update(id, processedDto);
       return this.findOne(id, tenantId);
     });
   }

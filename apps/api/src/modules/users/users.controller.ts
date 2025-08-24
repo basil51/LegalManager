@@ -10,12 +10,12 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Get()
-  async findAll(@CurrentTenant() tenantId: string): Promise<User[]> {
+  async findAll(@CurrentTenant() tenantId: string): Promise<Partial<User>[]> {
     return this.usersService.findAll(tenantId);
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: string, @CurrentTenant() tenantId: string): Promise<User | null> {
+  async findOne(@Param('id') id: string, @CurrentTenant() tenantId: string): Promise<Partial<User> | null> {
     return this.usersService.findOne(id, tenantId);
   }
 }
