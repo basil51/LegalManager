@@ -23,7 +23,8 @@ export default function LoginPage() {
     const token = localStorage.getItem('token');
     if (token) {
       const currentLocale = window.location.pathname.split('/')[1] || 'en';
-      router.push(`/${currentLocale}`);
+      // Use full navigation to ensure Providers/layout re-initialize properly
+      window.location.replace(`/${currentLocale}`);
     }
   }, [router]);
 
@@ -52,11 +53,9 @@ export default function LoginPage() {
         if (isLogin) {
           localStorage.setItem('token', data.access_token);
           setMessage(`✅ ${t('Auth.loginSuccess', { name: data.user.display_name })}`);
-          // Redirect to dashboard after 1 second
-          setTimeout(() => {
-            const currentLocale = window.location.pathname.split('/')[1] || 'en';
-            router.push(`/${currentLocale}`);
-          }, 1000);
+          // Redirect immediately with full reload to avoid transient blank state
+          const currentLocale = window.location.pathname.split('/')[1] || 'en';
+          window.location.replace(`/${currentLocale}`);
         } else {
           setMessage(`✅ ${t('Auth.registerSuccess')}`);
           setIsLogin(true);

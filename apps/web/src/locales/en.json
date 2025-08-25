@@ -282,7 +282,7 @@
     "tagsPlaceholder": "tag1, tag2, tag3",
     "preview": "Preview",
     "previewNotAvailable": "Preview not available for this file type",
-    "officeDocumentsSupported": "Office documents (DOCX, XLSX, PPTX) are now supported for preview",
+    
     "uploading": "Uploading...",
     "selectCase": "Select a case (optional)",
     "selectClient": "Select a client (optional)",

@@ -3,7 +3,8 @@
 import { useState, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
 import { Document } from '@/lib/api-client';
-import PdfCanvasViewer from './viewers/PdfCanvasViewer';
+import { apiClient } from '@/lib/api-client';
+import PdfEmbedViewer from './viewers/PdfEmbedViewer';
 
 interface DocumentPreviewModalProps {
   document: Document;
@@ -24,26 +25,40 @@ export default function DocumentPreviewModal({ document, onClose }: DocumentPrev
   const fileExtension = getFileExtension(document.original_filename);
 
   useEffect(() => {
+    let blobUrl: string | null = null;
     const loadDocument = async () => {
       try {
         setLoading(true);
         setError(null);
         
-        const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:4003/api/v1';
+        console.log('DocumentPreviewModal: Loading document for:', document.id);
         
-        // Create authenticated URL for document viewer
-        const authenticatedUrl = `${apiUrl}/documents/${document.id}/download`;
-        setDocumentUrl(authenticatedUrl);
+        if (fileExtension === 'pdf') {
+          const blob = await apiClient.downloadDocument(document.id);
+          blobUrl = URL.createObjectURL(blob);
+          setDocumentUrl(blobUrl);
+        } else if (document.mime_type.startsWith('image/')) {
+          const url = await apiClient.getDocumentDownloadUrl(document.id);
+          setDocumentUrl(url);
+        } else {
+          const url = await apiClient.getDocumentDownloadUrl(document.id);
+          setDocumentUrl(url);
+        }
       } catch (err) {
+        console.error('DocumentPreviewModal: Error loading document:', err);
         setError(err instanceof Error ? err.message : 'Failed to load document');
-        console.error('Error loading document:', err);
       } finally {
         setLoading(false);
       }
     };
 
     loadDocument();
-  }, [document.id]);
+    return () => {
+      if (blobUrl) {
+        URL.revokeObjectURL(blobUrl);
+      }
+    };
+  }, [document.id, fileExtension, document.mime_type]);
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -53,6 +68,8 @@ export default function DocumentPreviewModal({ document, onClose }: DocumentPrev
           <div>
             <h2 className="text-xl font-semibold text-gray-900">{document.title}</h2>
             <p className="text-sm text-gray-500">{document.original_filename}</p>
+            <p className="text-xs text-gray-400">Type: {document.mime_type}</p>
+            <p className="text-xs text-blue-500 mt-1">Preview supports PDF and images. Other files can be downloaded.</p>
           </div>
           <button
             onClick={onClose}
@@ -76,6 +93,7 @@ export default function DocumentPreviewModal({ document, onClose }: DocumentPrev
             <div className="flex items-center justify-center h-64">
               <div className="text-center">
                 <div className="text-red-600 mb-2">{error}</div>
+                <div className="text-sm text-gray-500 mb-4">Document ID: {document.id}</div>
                 <button
                   onClick={() => {
                     const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:4003/api/v1';
@@ -91,19 +109,28 @@ export default function DocumentPreviewModal({ document, onClose }: DocumentPrev
 
           {documentUrl && !loading && !error && (
             <div className="w-full h-[70vh] overflow-auto">
-              {fileExtension === 'pdf' ? (
-                <PdfCanvasViewer 
-                  url={documentUrl} 
-                  className="w-full"
-                  headers={{
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
-                  }}
-                />
-              ) : (
+              {fileExtension === 'pdf' && (
+                <div>
+                  <PdfEmbedViewer 
+                    url={documentUrl}
+                    className="w-full"
+                    title={document.title}
+                  />
+                </div>
+              )}
+              {fileExtension !== 'pdf' && document.mime_type.startsWith('image/') && (
+                <div className="w-full flex justify-center">
+                  <img src={documentUrl} alt={document.title || ''} className="max-w-full h-auto border rounded shadow" />
+                </div>
+              )}
+              {fileExtension !== 'pdf' && !document.mime_type.startsWith('image/') && (
                 <div className="flex items-center justify-center h-full">
                   <div className="text-center">
                     <div className="text-gray-500 mb-4">
                       {t('Documents.previewNotAvailable')}
+                    </div>
+                    <div className="text-sm text-gray-400 mb-4">
+                      File type: {fileExtension} ({document.mime_type})
                     </div>
                     <button
                       onClick={() => {

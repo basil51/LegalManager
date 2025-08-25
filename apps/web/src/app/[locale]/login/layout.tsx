@@ -8,17 +8,12 @@ export default async function LoginLayout({
   children: React.ReactNode;
   params: Promise<{ locale: string }>;
 }) {
-  const { locale } = await params;
+  await params; // locale handled by parent layout
   const messages = await getMessages();
-  const isRTL = ['ar', 'he', 'fa', 'ur'].includes(locale);
 
   return (
-    <html lang={locale} dir={isRTL ? 'rtl' : 'ltr'}>
-      <body className="min-h-dvh antialiased">
-        <NextIntlClientProvider messages={messages}>
-          {children}
-        </NextIntlClientProvider>
-      </body>
-    </html>
+    <NextIntlClientProvider messages={messages}>
+      {children}
+    </NextIntlClientProvider>
   );
 }

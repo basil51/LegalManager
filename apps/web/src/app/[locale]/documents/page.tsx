@@ -1,11 +1,11 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { apiClient, Document, DocumentType, Case, Client } from '@/lib/api-client';
 import DocumentUploadModal from '@/components/DocumentUploadModal';
-import DocumentPreviewModal from '@/components/DocumentPreviewModal';
+import PdfEmbedViewer from '@/components/viewers/PdfEmbedViewer';
 import { useToast } from '@/contexts/ToastContext';
 import { UploadDocumentGuard, DeleteDocumentGuard } from '@/components/PermissionGuard';
 
@@ -18,8 +18,9 @@ export default function DocumentsPage() {
   const [loading, setLoading] = useState(true);
   const [showUploadModal, setShowUploadModal] = useState(false);
   const { addToast } = useToast();
-  const [showPreviewModal, setShowPreviewModal] = useState(false);
-  const [previewDocument, setPreviewDocument] = useState<Document | null>(null);
+
+  const [expandedDocumentId, setExpandedDocumentId] = useState<string | null>(null);
+  const [inlinePreviewUrl, setInlinePreviewUrl] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedType, setSelectedType] = useState<DocumentType | ''>('');
   const [selectedCase, setSelectedCase] = useState<string>('');
@@ -123,13 +124,35 @@ export default function DocumentsPage() {
     }
   };
 
-  const handlePreviewDocument = async (doc: Document) => {
+
+
+  const handleToggleInlinePreview = async (doc: Document) => {
     try {
-      setPreviewDocument(doc);
-      setShowPreviewModal(true);
+      if (expandedDocumentId === doc.id) {
+        // Close the inline preview
+        setExpandedDocumentId(null);
+        if (inlinePreviewUrl && inlinePreviewUrl.startsWith('blob:')) {
+          URL.revokeObjectURL(inlinePreviewUrl);
+        }
+        setInlinePreviewUrl(null);
+      } else {
+        // Open inline preview
+        setExpandedDocumentId(doc.id);
+        
+        if (doc.mime_type === 'application/pdf') {
+          // Create blob URL with proper authentication
+          const blob = await apiClient.downloadDocument(doc.id);
+          // Create a new blob with a filename hint (though browsers may still ignore it)
+          const url = URL.createObjectURL(blob);
+          setInlinePreviewUrl(url);
+        } else if (doc.mime_type.startsWith('image/')) {
+          const url = await apiClient.getDocumentDownloadUrl(doc.id);
+          setInlinePreviewUrl(url);
+        }
+      }
     } catch (err) {
-      addToast('error', err instanceof Error ? err.message : 'Failed to preview document');
-      console.error('Error previewing document:', err);
+      addToast('error', err instanceof Error ? err.message : 'Failed to load inline preview');
+      console.error('Error loading inline preview:', err);
     }
   };
 
@@ -139,19 +162,6 @@ export default function DocumentsPage() {
     
     // PDF
     if (mimeType === 'application/pdf') return true;
-    
-    // Office documents that can be converted to PDF
-    const officeMimeTypes = [
-      'application/vnd.openxmlformats-officedocument.wordprocessingml.document', // DOCX
-      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', // XLSX
-      'application/vnd.ms-excel', // XLS
-      'application/vnd.openxmlformats-officedocument.presentationml.presentation', // PPTX
-      'application/msword', // DOC
-      'application/vnd.ms-powerpoint', // PPT
-    ];
-    
-    if (officeMimeTypes.includes(mimeType)) return true;
-    
     return false;
   };
 
@@ -235,13 +245,11 @@ export default function DocumentsPage() {
           </div>
           <div className="ml-3">
             <p className="text-sm text-blue-700">
-              Preview is now available for PDF files, images, and Office documents (DOCX, XLSX, PPTX, DOC, XLS, PPT)!
+              Preview is available for PDF files and images. Office documents are downloadable only.
             </p>
           </div>
         </div>
       </div>
-
-
 
       {/* Filters */}
       <div className="bg-white rounded-lg shadow p-4">
@@ -380,104 +388,133 @@ export default function DocumentsPage() {
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
                 {filteredDocuments.map((document) => (
-                  <tr key={document.id} className="hover:bg-gray-50">
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div>
-                        <div className="text-sm font-medium text-gray-900">
-                          {document.title}
-                        </div>
-                        <div className="text-sm text-gray-500">
-                          {document.original_filename}
-                        </div>
-                        {document.description && (
-                          <div className="text-sm text-gray-500 truncate max-w-xs">
-                            {document.description}
+                  <React.Fragment key={document.id}>
+                    <tr className="hover:bg-gray-50">
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div>
+                          <div className="text-sm font-medium text-gray-900">
+                            {document.title}
                           </div>
-                        )}
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">
-                        {getDocumentTypeLabel(document.type)}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {document.case ? (
-                        <button
-                          onClick={() => {
-                            const currentLocale = window.location.pathname.split('/')[1] || 'en';
-                            router.push(`/${currentLocale}/cases/${document.case!.id}`);
-                          }}
-                          className="text-blue-600 hover:text-blue-900"
-                        >
-                          {document.case.case_number}
-                        </button>
-                      ) : (
-                        <span className="text-gray-500">-</span>
-                      )}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {document.client ? (
-                        <button
-                          onClick={() => {
-                            const currentLocale = window.location.pathname.split('/')[1] || 'en';
-                            router.push(`/${currentLocale}/clients/${document.client!.id}`);
-                          }}
-                          className="text-blue-600 hover:text-blue-900"
-                        >
-                          {document.client.first_name} {document.client.last_name}
-                        </button>
-                      ) : (
-                        <span className="text-gray-500">-</span>
-                      )}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {formatFileSize(document.file_size)}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {formatDate(document.created_at)}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      <div className="flex flex-wrap gap-1">
-                        {(() => {
-                          const arr = normalizeTags((document as any).tags);
-                          return arr.length > 0
-                            ? arr.map((tag) => (
-                                <span key={tag} className="inline-flex px-2 py-0.5 text-xs rounded-full bg-gray-100 text-gray-700 border border-gray-200">
-                                  {tag}
-                                </span>
-                              ))
-                            : <span className="text-gray-400">-</span>;
-                        })()}
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                      <div className="flex space-x-2">
-                        {isPreviewable(document.mime_type) && (
+                          <div className="text-sm text-gray-500">
+                            {document.original_filename}
+                          </div>
+                          {document.description && (
+                            <div className="text-sm text-gray-500 truncate max-w-xs">
+                              {document.description}
+                            </div>
+                          )}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">
+                          {getDocumentTypeLabel(document.type)}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        {document.case ? (
                           <button
-                            onClick={() => handlePreviewDocument(document)}
-                            className="text-green-600 hover:text-green-900"
+                            onClick={() => {
+                              const currentLocale = window.location.pathname.split('/')[1] || 'en';
+                              router.push(`/${currentLocale}/cases/${document.case!.id}`);
+                            }}
+                            className="text-blue-600 hover:text-blue-900"
                           >
-                            {t('Documents.preview')}
+                            {document.case.case_number}
                           </button>
+                        ) : (
+                          <span className="text-gray-500">-</span>
                         )}
-                        <button
-                          onClick={() => handleDownloadDocument(document)}
-                          className="text-blue-600 hover:text-blue-900"
-                        >
-                          {t('Documents.download')}
-                        </button>
-                        <DeleteDocumentGuard>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        {document.client ? (
                           <button
-                            onClick={() => handleDeleteDocument(document.id)}
-                            className="text-red-600 hover:text-red-900"
+                            onClick={() => {
+                              const currentLocale = window.location.pathname.split('/')[1] || 'en';
+                              router.push(`/${currentLocale}/clients/${document.client!.id}`);
+                            }}
+                            className="text-blue-600 hover:text-blue-900"
                           >
-                            {t('Documents.delete')}
+                            {document.client.first_name} {document.client.last_name}
                           </button>
-                        </DeleteDocumentGuard>
-                      </div>
-                    </td>
-                  </tr>
+                        ) : (
+                          <span className="text-gray-500">-</span>
+                        )}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        {formatFileSize(document.file_size)}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        {formatDate(document.created_at)}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        <div className="flex flex-wrap gap-1">
+                          {(() => {
+                            const arr = normalizeTags((document as any).tags);
+                            return arr.length > 0
+                              ? arr.map((tag) => (
+                                  <span key={tag} className="inline-flex px-2 py-0.5 text-xs rounded-full bg-gray-100 text-gray-700 border border-gray-200">
+                                    {tag}
+                                  </span>
+                                ))
+                              : <span className="text-gray-400">-</span>;
+                          })()}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <div className="flex space-x-2">
+                          {isPreviewable(document.mime_type) && (
+                            <button
+                              onClick={() => handleToggleInlinePreview(document)}
+                              className="text-purple-600 hover:text-purple-900"
+                            >
+                              {expandedDocumentId === document.id ? 'Hide' : 'Show'}
+                            </button>
+                          )}
+                          <button
+                            onClick={() => handleDownloadDocument(document)}
+                            className="text-blue-600 hover:text-blue-900"
+                          >
+                            {t('Documents.download')}
+                          </button>
+                          <DeleteDocumentGuard>
+                            <button
+                              onClick={() => handleDeleteDocument(document.id)}
+                              className="text-red-600 hover:text-red-900"
+                            >
+                              {t('Documents.delete')}
+                            </button>
+                          </DeleteDocumentGuard>
+                        </div>
+                      </td>
+                    </tr>
+                    {expandedDocumentId === document.id && inlinePreviewUrl && (
+                      <tr key={`${document.id}-preview`}>
+                        <td colSpan={8} className="px-6 py-4 bg-gray-50">
+                          <div className="w-full">
+                            {document.mime_type === 'application/pdf' ? (
+                              <PdfEmbedViewer
+                                url={inlinePreviewUrl}
+                                title={document.title}
+                                className="w-full"
+                              />
+                            ) : document.mime_type.startsWith('image/') ? (
+                              <div className="flex justify-center">
+                                <img 
+                                  src={inlinePreviewUrl} 
+                                  alt={document.title} 
+                                  className="max-w-full max-h-96 border rounded shadow"
+                                />
+                              </div>
+                            ) : (
+                              <div className="text-center text-gray-500 py-8">
+                                Preview not available for this file type
+                              </div>
+                            )}
+                          </div>
+                        </td>
+                      </tr>
+                    )}
+                  </React.Fragment>
                 ))}
               </tbody>
             </table>
@@ -495,16 +532,7 @@ export default function DocumentsPage() {
         />
       )}
 
-      {/* Preview Modal */}
-      {showPreviewModal && previewDocument && (
-        <DocumentPreviewModal
-          document={previewDocument}
-          onClose={() => {
-            setShowPreviewModal(false);
-            setPreviewDocument(null);
-          }}
-        />
-      )}
+
     </div>
   );
 }

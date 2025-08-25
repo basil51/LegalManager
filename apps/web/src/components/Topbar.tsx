@@ -22,8 +22,10 @@ export default function Topbar() {
 
   const handleLogout = () => {
     localStorage.removeItem('token');
-    // default to English root
-    router.push('/en');
+    // Redirect to current locale's login with full reload to reset providers
+    const segments = (typeof window !== 'undefined' ? window.location.pathname : pathname || '/en').split('/').filter(Boolean);
+    const currentLocale = segments[0] || 'en';
+    window.location.replace(`/${currentLocale}/login`);
   };
 
   return (

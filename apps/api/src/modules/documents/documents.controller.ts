@@ -106,14 +106,22 @@ export class DocumentsController {
   async downloadDocument(
     @Param('id') id: string,
     @CurrentTenant() tenantId: string,
-    @Res() res: Response
+    @Res() res: Response,
+                                                                                                                                                                                                                                                            @Query('inline') inline?: string,
+    @Query('filename') requestedFilename?: string
   ) {
     const { buffer, filename, mimeType } = await this.documentsService.downloadDocument(id, tenantId);
     
+    const disposition = inline === 'true' ? 'inline' : 'attachment';
+    // Use requested filename if provided, otherwise use stored filename
+    const displayFilename = requestedFilename || filename;
+    
     res.set({
       'Content-Type': mimeType,
-      'Content-Disposition': `attachment; filename="${filename}"`,
+      'Content-Disposition': `${disposition}; filename*=UTF-8''${encodeURIComponent(displayFilename)}`,
       'Content-Length': buffer.length,
+      'X-Frame-Options': 'SAMEORIGIN',
+      'Content-Security-Policy': "frame-ancestors 'self'",
     });
     
     res.send(buffer);

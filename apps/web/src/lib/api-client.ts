@@ -364,32 +364,6 @@ class ApiClient {
     return result.downloadUrl;
   }
 
-  async convertDocument(file: Blob, filename: string): Promise<Blob> {
-    const formData = new FormData();
-    formData.append('file', file, filename);
-
-    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
-    
-    console.log('Converting document:', filename, 'Token:', token ? 'Present' : 'Missing');
-    
-    const response = await fetch(`${this.baseURL}/documents/convert`, {
-      method: 'POST',
-      headers: {
-        ...(token ? { Authorization: `Bearer ${token}` } : {}),
-      },
-      body: formData,
-    });
-
-    console.log('Convert Response:', response.status, response.statusText);
-
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      console.error('Convert Error Response:', errorData);
-      throw new Error(errorData.error || `Conversion failed: ${response.status} ${response.statusText}`);
-    }
-
-    return response.blob();
-  }
 }
 
 export const apiClient = new ApiClient();
