@@ -26,8 +26,8 @@ pnpm -F @legal/web dev
 ```
 
 ## 🌐 Access Points
-- **Web App**: http://localhost:3000/en (redirects to English by default)
-- **API**: http://localhost:4003/api/v1 (Swagger docs at /docs)
+- **Web App**: http://localhost:3005/en (redirects to English by default)
+- **API**: http://localhost:4005/api/v1 (Swagger docs at /docs)
 - **Infrastructure**:
   - PostgreSQL: localhost:5432
   - Redis: localhost:6379

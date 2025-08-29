@@ -10,7 +10,7 @@ async function bootstrap() {
   
   // Configure CORS
   app.enableCors({
-    origin: ['http://localhost:3000', 'http://localhost:3003'],
+    origin: ['http://localhost:3005'],
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
@@ -28,7 +28,7 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api/v1/docs', app, document);
 
-  const port = process.env.PORT || 4000;
+  const port = process.env.PORT || 4005;
   await app.listen(port);
   // eslint-disable-next-line no-console
   console.log(`API listening on http://localhost:${port}/api/v1`);

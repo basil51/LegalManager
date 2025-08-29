@@ -56,6 +56,16 @@
       "description": "תזמון ופגישות",
       "button": "צפה ביומן"
     },
+    "invoices": {
+      "title": "חשבוניות",
+      "description": "ניהול חשבוניות וחיובים",
+      "button": "צפה בחשבוניות"
+    },
+    "payments": {
+      "title": "תשלומים",
+      "description": "ניהול תשלומים ועסקאות",
+      "button": "צפה בתשלומים"
+    },
     "recentActivity": "פעילות אחרונה",
     "noActivity": "אין פעילות אחרונה להצגה.",
     "activityDescription": "יוצגו תיקים, מסמכים ופגישות אחרונות לאחר יישום המודולים הבסיסיים."
@@ -64,7 +74,14 @@
     "loading": "טוען...",
     "error": "שגיאה",
     "success": "הצלחה",
-    "close": "סגור"
+    "close": "סגור",
+    "search": "חיפוש",
+    "clear": "ניקוי",
+    "view": "צפייה",
+    "edit": "עריכה",
+    "delete": "מחיקה",
+    "cancel": "בטל",
+    "saving": "שומר..."
   },
   "App": {
     "name": "מנהל משפטי"
@@ -243,6 +260,68 @@
       "other": "אחר"
     }
   },
+  "Invoices": {
+    "title": "ניהול חשבוניות",
+    "createInvoice": "צור חשבונית",
+    "search": "חיפוש",
+    "searchPlaceholder": "חפש חשבוניות...",
+    "statusLabel": "סטטוס",
+    "client": "לקוח",
+    "case": "תיק",
+    "allStatuses": "כל הסטטוסים",
+    "allClients": "כל הלקוחות",
+    "allCases": "כל התיקים",
+    "noInvoices": "לא נמצאו חשבוניות",
+    "deleteConfirm": "האם אתה בטוח שברצונך למחוק חשבונית זו?",
+    "deleteSuccess": "החשבונית נמחקה בהצלחה",
+    "createSuccess": "החשבונית נוצרה בהצלחה",
+    "invoiceNumber": "מספר חשבונית",
+    "totalAmount": "סכום כולל",
+    "balanceDue": "יתרה לתשלום",
+    "dueDate": "תאריך יעד",
+    "actions": "פעולות",
+    "basicInformation": "מידע בסיסי",
+    "additionalInformation": "מידע נוסף",
+    "items": "פריטי חשבונית",
+    "notes": "הערות",
+    "terms": "תנאים והגבלות",
+    "total": "סה״כ",
+    "addItem": "הוסף פריט",
+    "description": "תיאור",
+    "quantity": "כמות",
+    "unitPrice": "מחיר יחידה",
+    "amount": "סכום",
+    "issueDate": "תאריך הוצאה",
+    "selectClient": "בחר לקוח",
+    "selectCase": "בחר תיק (אופציונלי)",
+    "title": "כותרת",
+    "titlePlaceholder": "הכנס כותרת חשבונית",
+    "type": "סוג",
+    "invoiceNumberPlaceholder": "הכנס מספר חשבונית",
+    "descriptionPlaceholder": "הכנס תיאור פריט",
+    "notesPlaceholder": "הכנס הערות נוספות",
+    "termsPlaceholder": "הכנס תנאים והגבלות",
+    "itemType": {
+      "service": "שירות",
+      "expense": "הוצאה",
+      "disbursement": "תשלום",
+      "fee": "אגרה",
+      "other": "אחר"
+    },
+    "errors": {
+      "clientRequired": "לקוח נדרש",
+      "titleRequired": "כותרת החשבונית נדרשת",
+      "invalidItems": "אנא ודא שכל הפריטים כוללים תיאורים וסכומים תקינים"
+    },
+    "status": {
+      "draft": "טיוטה",
+      "sent": "נשלחה",
+      "paid": "שולמה",
+      "overdue": "באיחור",
+      "cancelled": "בוטלה",
+      "partiallyPaid": "שולמה חלקית"
+    }
+  },
   "Appointments": {
     "title": "פגישות",
     "newAppointment": "פגישה חדשה",
@@ -301,5 +380,85 @@
       "clientAutoAssigned": "הלקוח הוקצה אוטומטית בהתבסס על התיק שנבחר"
     },
     "minutes": "דקות"
+  },
+  "Payments": {
+    "title": "ניהול תשלומים",
+    "createPayment": "צור תשלום",
+    "search": "חיפוש",
+    "searchPlaceholder": "חפש תשלומים...",
+    "statusLabel": "סטטוס",
+    "client": "לקוח",
+    "invoice": "חשבונית",
+    "allStatuses": "כל הסטטוסים",
+    "allClients": "כל הלקוחות",
+    "allInvoices": "כל החשבוניות",
+    "noPayments": "לא נמצאו תשלומים",
+    "deleteConfirm": "האם אתה בטוח שברצונך למחוק תשלום זה?",
+    "deleteSuccess": "התשלום נמחק בהצלחה",
+    "createSuccess": "התשלום נוצר בהצלחה",
+    "paymentDate": "תאריך תשלום",
+    "amount": "סכום",
+    "paymentMethod": "אמצעי תשלום",
+    "actions": "פעולות",
+    "status": {
+      "pending": "ממתין",
+      "completed": "הושלם",
+      "failed": "נכשל",
+      "cancelled": "בוטל",
+      "refunded": "הוחזר"
+    },
+    "basicInformation": "מידע בסיסי",
+    "additionalInformation": "מידע נוסף",
+    "selectClient": "בחר לקוח",
+    "selectInvoice": "בחר חשבונית (אופציונלי)",
+    "amountPlaceholder": "הכנס סכום תשלום",
+    "referenceNumber": "מספר הפניה",
+    "referenceNumberPlaceholder": "הכנס מספר הפניה",
+    "notes": "הערות",
+    "notesPlaceholder": "הכנס הערות נוספות",
+    "paymentMethodLabel": "אמצעי תשלום",
+    "paymentMethod": {
+      "cash": "מזומן",
+      "check": "צ'ק",
+      "bankTransfer": "העברה בנקאית",
+      "creditCard": "כרטיס אשראי",
+      "debitCard": "כרטיס דביט",
+      "other": "אחר"
+    },
+    "errors": {
+      "clientRequired": "לקוח נדרש",
+      "amountRequired": "סכום התשלום נדרש"
+    }
+  },
+  "Portal": {
+    "title": "פורטל לקוח",
+    "welcomeMessage": "ברוכים הבאים לפורטל הלקוח שלכם",
+    "overview": "סקירה כללית",
+    "invoices": "חשבוניות",
+    "payments": "תשלומים",
+    "cases": "תיקים",
+    "totalInvoices": "סה״כ חשבוניות",
+    "totalAmount": "סכום כולל",
+    "totalPaid": "סה״כ שולם",
+    "paymentsCount": "תשלומים",
+    "outstanding": "יתרה לתשלום",
+    "requiresAttention": "דורש תשומת לב",
+    "recentActivity": "פעילות אחרונה",
+    "noRecentActivity": "אין פעילות אחרונה",
+    "noInvoices": "לא נמצאו חשבוניות",
+    "noPayments": "לא נמצאו תשלומים",
+    "noCases": "לא נמצאו תיקים",
+    "invoiceNumber": "מספר חשבונית",
+    "issueDate": "תאריך הוצאה",
+    "dueDate": "תאריך יעד",
+    "amount": "סכום",
+    "status": "סטטוס",
+    "paymentDate": "תאריך תשלום",
+    "invoice": "חשבונית",
+    "method": "שיטה",
+    "caseNumber": "מספר תיק",
+    "title": "כותרת",
+    "type": "סוג",
+    "assignedLawyer": "עורך דין מטפל"
   }
 }

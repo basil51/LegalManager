@@ -26,7 +26,7 @@
 - ✅ **Internal messaging system**: Full CRUD with threading, read status, and tenant isolation
 - ✅ **Frontend API Integration**: Centralized API client with TypeScript interfaces
 - ✅ **Cases Management UI**: List view with search, filtering, and navigation
-- 🔄 Billing primitives
+- ✅ **Billing primitives**: Invoice and payment entities, API endpoints, and frontend UI
 
 ## Phase 1.5 – Frontend UI Development ✅ COMPLETED
 - ✅ **Frontend Structure**: Simplified layouts and routing

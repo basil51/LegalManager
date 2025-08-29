@@ -36,6 +36,14 @@ interface PermissionsContextType {
   canManageUsers: boolean;
   canViewUsers: boolean;
   canManageSystem: boolean;
+  canCreateInvoices: boolean;
+  canEditInvoices: boolean;
+  canDeleteInvoices: boolean;
+  canViewInvoices: boolean;
+  canCreatePayments: boolean;
+  canEditPayments: boolean;
+  canDeletePayments: boolean;
+  canViewPayments: boolean;
   setUser: (user: User | null) => void;
 }
 
@@ -51,7 +59,7 @@ export function PermissionsProvider({ children }: { children: ReactNode }) {
       const token = localStorage.getItem('token');
       if (token) {
         try {
-          const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:4003/api/v1';
+          const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:4005/api/v1';
           const response = await fetch(`${apiUrl}/auth/profile`, {
             headers: {
               'Authorization': `Bearer ${token}`,
@@ -113,6 +121,14 @@ export function PermissionsProvider({ children }: { children: ReactNode }) {
     canManageUsers: PermissionChecks.canManageUsers(userRoles),
     canViewUsers: PermissionChecks.canViewUsers(userRoles),
     canManageSystem: PermissionChecks.canManageSystem(userRoles),
+    canCreateInvoices: PermissionChecks.canCreateInvoices(userRoles),
+    canEditInvoices: PermissionChecks.canEditInvoices(userRoles),
+    canDeleteInvoices: PermissionChecks.canDeleteInvoices(userRoles),
+    canViewInvoices: PermissionChecks.canViewInvoices(userRoles),
+    canCreatePayments: PermissionChecks.canCreatePayments(userRoles),
+    canEditPayments: PermissionChecks.canEditPayments(userRoles),
+    canDeletePayments: PermissionChecks.canDeletePayments(userRoles),
+    canViewPayments: PermissionChecks.canViewPayments(userRoles),
     setUser,
   };
 

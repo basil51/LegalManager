@@ -163,7 +163,7 @@ export default function CalendarPage() {
     if (!token) return;
 
     try {
-      const response = await fetch('http://localhost:4003/api/v1/appointments', {
+      const response = await fetch('http://localhost:4005/api/v1/appointments', {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -218,7 +218,7 @@ export default function CalendarPage() {
     if (!token) return;
 
     try {
-      const response = await fetch(`http://localhost:4003/api/v1/appointments/${appointmentId}`, {
+      const response = await fetch(`http://localhost:4005/api/v1/appointments/${appointmentId}`, {
         method: 'DELETE',
         headers: {
           Authorization: `Bearer ${token}`,
@@ -240,7 +240,7 @@ export default function CalendarPage() {
     if (!token) return;
 
     try {
-      const response = await fetch(`http://localhost:4003/api/v1/appointments/${appointmentId}`, {
+      const response = await fetch(`http://localhost:4005/api/v1/appointments/${appointmentId}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',

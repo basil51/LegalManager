@@ -35,7 +35,7 @@ export default function LoginPage() {
 
     try {
       const endpoint = isLogin ? '/auth/login' : '/auth/register';
-      const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:4003/api/v1';
+      const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:4005/api/v1';
       const requestData = isLogin ? { email: formData.email, password: formData.password } : formData;
       console.log('Sending request to:', `${apiUrl}${endpoint}`, requestData);
       const response = await fetch(`${apiUrl}${endpoint}`, {

@@ -96,7 +96,7 @@ export default function DocumentPreviewModal({ document, onClose }: DocumentPrev
                 <div className="text-sm text-gray-500 mb-4">Document ID: {document.id}</div>
                 <button
                   onClick={() => {
-                    const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:4003/api/v1';
+                    const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:4005/api/v1';
                     window.open(`${apiUrl}/documents/${document.id}/download`, '_blank');
                   }}
                   className="text-blue-600 hover:text-blue-800 underline"
@@ -134,7 +134,7 @@ export default function DocumentPreviewModal({ document, onClose }: DocumentPrev
                     </div>
                     <button
                       onClick={() => {
-                        const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:4003/api/v1';
+                        const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:4005/api/v1';
                         window.open(`${apiUrl}/documents/${document.id}/download`, '_blank');
                       }}
                       className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
@@ -152,7 +152,7 @@ export default function DocumentPreviewModal({ document, onClose }: DocumentPrev
               <p className="text-gray-500 mb-4">{t('Documents.previewNotAvailable')}</p>
               <button
                 onClick={() => {
-                  const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:4003/api/v1';
+                  const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:4005/api/v1';
                   window.open(`${apiUrl}/documents/${document.id}/download`, '_blank');
                 }}
                 className="text-blue-600 hover:text-blue-800 underline"

@@ -56,6 +56,16 @@
       "description": "الجدولة والمواعيد",
       "button": "عرض التقويم"
     },
+    "invoices": {
+      "title": "الفواتير",
+      "description": "إدارة الفواتير والمحاسبة",
+      "button": "عرض الفواتير"
+    },
+    "payments": {
+      "title": "المدفوعات",
+      "description": "إدارة المدفوعات والمعاملات",
+      "button": "عرض المدفوعات"
+    },
     "recentActivity": "النشاط الأخير",
     "noActivity": "لا توجد أنشطة حديثة للعرض.",
     "activityDescription": "سيتم عرض القضايا والمستندات والمواعيد الحديثة بمجرد تنفيذ الوحدات الأساسية."
@@ -64,7 +74,14 @@
     "loading": "جاري التحميل...",
     "error": "خطأ",
     "success": "نجح",
-    "close": "إغلاق"
+    "close": "إغلاق",
+    "search": "بحث",
+    "clear": "مسح",
+    "view": "عرض",
+    "edit": "تعديل",
+    "delete": "حذف",
+    "cancel": "إلغاء",
+    "saving": "جاري الحفظ..."
   },
   "App": {
     "name": "المدير القانوني"
@@ -243,6 +260,68 @@
       "other": "أخرى"
     }
   },
+  "Invoices": {
+    "title": "إدارة الفواتير",
+    "createInvoice": "إنشاء فاتورة",
+    "search": "بحث",
+    "searchPlaceholder": "البحث في الفواتير...",
+    "statusLabel": "الحالة",
+    "client": "العميل",
+    "case": "القضية",
+    "allStatuses": "جميع الحالات",
+    "allClients": "جميع العملاء",
+    "allCases": "جميع القضايا",
+    "noInvoices": "لا توجد فواتير",
+    "deleteConfirm": "هل أنت متأكد من حذف هذه الفاتورة؟",
+    "deleteSuccess": "تم حذف الفاتورة بنجاح",
+    "createSuccess": "تم إنشاء الفاتورة بنجاح",
+    "invoiceNumber": "رقم الفاتورة",
+    "totalAmount": "المبلغ الإجمالي",
+    "balanceDue": "المبلغ المستحق",
+    "dueDate": "تاريخ الاستحقاق",
+    "actions": "الإجراءات",
+    "basicInformation": "المعلومات الأساسية",
+    "additionalInformation": "معلومات إضافية",
+    "items": "عناصر الفاتورة",
+    "notes": "ملاحظات",
+    "terms": "الشروط والأحكام",
+    "total": "المجموع",
+    "addItem": "إضافة عنصر",
+    "description": "الوصف",
+    "quantity": "الكمية",
+    "unitPrice": "سعر الوحدة",
+    "amount": "المبلغ",
+    "issueDate": "تاريخ الإصدار",
+    "selectClient": "اختر عميل",
+    "selectCase": "اختر قضية (اختياري)",
+    "title": "العنوان",
+    "titlePlaceholder": "أدخل عنوان الفاتورة",
+    "type": "النوع",
+    "invoiceNumberPlaceholder": "أدخل رقم الفاتورة",
+    "descriptionPlaceholder": "أدخل وصف العنصر",
+    "notesPlaceholder": "أدخل ملاحظات إضافية",
+    "termsPlaceholder": "أدخل الشروط والأحكام",
+    "itemType": {
+      "service": "خدمة",
+      "expense": "مصروف",
+      "disbursement": "دفع",
+      "fee": "رسوم",
+      "other": "أخرى"
+    },
+    "errors": {
+      "clientRequired": "العميل مطلوب",
+      "titleRequired": "عنوان الفاتورة مطلوب",
+      "invalidItems": "يرجى التأكد من أن جميع العناصر لها أوصاف ومبالغ صحيحة"
+    },
+    "status": {
+      "draft": "مسودة",
+      "sent": "مرسلة",
+      "paid": "مدفوعة",
+      "overdue": "متأخرة",
+      "cancelled": "ملغية",
+      "partiallyPaid": "مدفوعة جزئياً"
+    }
+  },
   "Appointments": {
     "title": "المواعيد",
     "newAppointment": "موعد جديد",
@@ -301,5 +380,85 @@
       "clientAutoAssigned": "تم تعيين العميل تلقائياً بناءً على القضية المختارة"
     },
     "minutes": "دقائق"
+  },
+  "Payments": {
+    "title": "إدارة المدفوعات",
+    "createPayment": "إنشاء دفعة",
+    "search": "بحث",
+    "searchPlaceholder": "البحث في المدفوعات...",
+    "statusLabel": "الحالة",
+    "client": "العميل",
+    "invoice": "الفاتورة",
+    "allStatuses": "جميع الحالات",
+    "allClients": "جميع العملاء",
+    "allInvoices": "جميع الفواتير",
+    "noPayments": "لا توجد مدفوعات",
+    "deleteConfirm": "هل أنت متأكد من حذف هذه الدفعة؟",
+    "deleteSuccess": "تم حذف الدفعة بنجاح",
+    "createSuccess": "تم إنشاء الدفعة بنجاح",
+    "paymentDate": "تاريخ الدفع",
+    "amount": "المبلغ",
+    "paymentMethod": "طريقة الدفع",
+    "actions": "الإجراءات",
+    "status": {
+      "pending": "في الانتظار",
+      "completed": "مكتمل",
+      "failed": "فشل",
+      "cancelled": "ملغي",
+      "refunded": "مسترد"
+    },
+    "basicInformation": "المعلومات الأساسية",
+    "additionalInformation": "معلومات إضافية",
+    "selectClient": "اختر عميل",
+    "selectInvoice": "اختر فاتورة (اختياري)",
+    "amountPlaceholder": "أدخل مبلغ الدفع",
+    "referenceNumber": "رقم المرجع",
+    "referenceNumberPlaceholder": "أدخل رقم المرجع",
+    "notes": "ملاحظات",
+    "notesPlaceholder": "أدخل ملاحظات إضافية",
+    "paymentMethodLabel": "طريقة الدفع",
+    "paymentMethod": {
+      "cash": "نقداً",
+      "check": "شيك",
+      "bankTransfer": "تحويل بنكي",
+      "creditCard": "بطاقة ائتمان",
+      "debitCard": "بطاقة مدى",
+      "other": "أخرى"
+    },
+    "errors": {
+      "clientRequired": "العميل مطلوب",
+      "amountRequired": "مبلغ الدفع مطلوب"
+    }
+  },
+  "Portal": {
+    "title": "بوابة العميل",
+    "welcomeMessage": "مرحباً بك في بوابة العميل",
+    "overview": "نظرة عامة",
+    "invoices": "الفواتير",
+    "payments": "المدفوعات",
+    "cases": "القضايا",
+    "totalInvoices": "إجمالي الفواتير",
+    "totalAmount": "المبلغ الإجمالي",
+    "totalPaid": "إجمالي المدفوع",
+    "paymentsCount": "المدفوعات",
+    "outstanding": "المستحق",
+    "requiresAttention": "يتطلب انتباه",
+    "recentActivity": "النشاط الأخير",
+    "noRecentActivity": "لا توجد أنشطة حديثة",
+    "noInvoices": "لا توجد فواتير",
+    "noPayments": "لا توجد مدفوعات",
+    "noCases": "لا توجد قضايا",
+    "invoiceNumber": "رقم الفاتورة",
+    "issueDate": "تاريخ الإصدار",
+    "dueDate": "تاريخ الاستحقاق",
+    "amount": "المبلغ",
+    "status": "الحالة",
+    "paymentDate": "تاريخ الدفع",
+    "invoice": "الفاتورة",
+    "method": "الطريقة",
+    "caseNumber": "رقم القضية",
+    "title": "العنوان",
+    "type": "النوع",
+    "assignedLawyer": "المحامي المكلف"
   }
 }

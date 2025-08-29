@@ -9,8 +9,8 @@ echo "🔄 Updating project status files..."
 CURRENT_DATE=$(date '+%Y-%m-%d %H:%M:%S')
 
 # Check if services are running
-API_RUNNING=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:4003/api/v1/health 2>/dev/null || echo "000")
-WEB_RUNNING=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:3000/en 2>/dev/null || echo "000")
+API_RUNNING=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:4005/api/v1/health 2>/dev/null || echo "000")
+WEB_RUNNING=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:3005/en 2>/dev/null || echo "000")
 DB_RUNNING=$(docker ps --filter "name=infra_db" --format "table {{.Status}}" 2>/dev/null | grep -q "Up" && echo "running" || echo "stopped")
 
 # Get package versions
@@ -18,8 +18,8 @@ NEXT_VERSION=$(grep '"next":' apps/web/package.json | sed 's/.*"next": "\([^"]*\
 NESTJS_VERSION=$(grep '"@nestjs/core":' apps/api/package.json | sed 's/.*"@nestjs/core": "\([^"]*\)".*/\1/')
 
 echo "📊 Current Status:"
-echo "  - API (port 4003): $([ "$API_RUNNING" = "200" ] && echo "✅ Running" || echo "❌ Stopped")"
-echo "  - Web (port 3000): $([ "$WEB_RUNNING" = "200" ] && echo "✅ Running" || echo "❌ Stopped")"
+echo "  - API (port 4005): $([ "$API_RUNNING" = "200" ] && echo "✅ Running" || echo "❌ Stopped")"
+echo "  - Web (port 3005): $([ "$WEB_RUNNING" = "200" ] && echo "✅ Running" || echo "❌ Stopped")"
 echo "  - Database: $([ "$DB_RUNNING" = "running" ] && echo "✅ Running" || echo "❌ Stopped")"
 echo "  - Next.js: $NEXT_VERSION"
 echo "  - NestJS: $NESTJS_VERSION"

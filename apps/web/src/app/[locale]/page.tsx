@@ -31,7 +31,7 @@ export default function DashboardPage() {
     }
 
     // Fetch user profile
-    fetch('http://localhost:4003/api/v1/auth/profile', {
+    fetch('http://localhost:4005/api/v1/auth/profile', {
       headers: {
         'Authorization': `Bearer ${token}`,
       },
@@ -118,6 +118,14 @@ export default function DashboardPage() {
             <p className="text-gray-600 text-sm mb-4">{t('Dashboard.documents.description')}</p>
             <Link href="/documents" className="block w-full bg-purple-500 text-white py-2 px-4 rounded-md hover:bg-purple-600 transition-colors text-center">
               {t('Dashboard.documents.button')}
+            </Link>
+          </div>
+
+          <div className="bg-white rounded-lg shadow-md p-6">
+            <h3 className="text-lg font-medium mb-2">{t('Dashboard.invoices.title')}</h3>
+            <p className="text-gray-600 text-sm mb-4">{t('Dashboard.invoices.description')}</p>
+            <Link href="/invoices" className="block w-full bg-orange-500 text-white py-2 px-4 rounded-md hover:bg-orange-600 transition-colors text-center">
+              {t('Dashboard.invoices.button')}
             </Link>
           </div>
 

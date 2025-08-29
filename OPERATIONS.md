@@ -15,19 +15,19 @@ pnpm install
 docker compose -f infra/docker-compose.dev.yml up -d
 
 # Start applications (in separate terminals)
-pnpm -F @legal/api dev    # API on http://localhost:4003
-pnpm -F @legal/web dev    # Web on http://localhost:3000
+pnpm -F @legal/api dev    # API on http://localhost:4005
+pnpm -F @legal/web dev    # Web on http://localhost:3005
 ```
 
 ## Environment Setup
 Environment files are already configured:
-- `apps/api/.env` - API configuration (PORT=4003, DATABASE_URL, etc.)
+- `apps/api/.env` - API configuration (PORT=4005, DATABASE_URL, etc.)
 - `apps/web/.env.local` - Web app configuration (API_BASE_URL)
 
 ## Service Access
-- **Web App**: http://localhost:3000/en
-- **API**: http://localhost:4003/api/v1
-- **API Docs**: http://localhost:4003/api/v1/docs
+- **Web App**: http://localhost:3005/en
+- **API**: http://localhost:4005/api/v1
+- **API Docs**: http://localhost:4005/api/v1/docs
 - **PostgreSQL**: localhost:5432 (user: `postgres`, password: `postgres`, db: `legal`)
 - **Redis**: localhost:6379
 - **MinIO**: localhost:9000 (Console: localhost:9001, user: `minio`, password: `minio12345`)

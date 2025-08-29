@@ -2,6 +2,7 @@ import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, getTranslations } from 'next-intl/server';
 import Providers from '@/components/Providers';
 import AppShell from '@/components/AppShell';
+import LocaleProvider from '@/components/LocaleProvider';
 
 export const dynamic = 'force-dynamic';
 
@@ -22,14 +23,12 @@ export default async function LocaleLayout({
   const t = await getTranslations({ locale });
 
   return (
-    <html lang={locale} dir={isRTL ? 'rtl' : 'ltr'}> 
-      <body className="min-h-dvh antialiased">
-        <NextIntlClientProvider messages={messages}>
-          <Providers>
-            <AppShell locale={locale}>{children}</AppShell>
-          </Providers>
-        </NextIntlClientProvider>
-      </body>
-    </html>
+    <LocaleProvider locale={locale}>
+      <NextIntlClientProvider messages={messages}>
+        <Providers>
+          <AppShell locale={locale}>{children}</AppShell>
+        </Providers>
+      </NextIntlClientProvider>
+    </LocaleProvider>
   );
 }

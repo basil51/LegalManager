@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import PdfEmbedViewer from '@/components/viewers/PdfEmbedViewer';
 
-const API = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:4003/api/v1';
+const API = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:4005/api/v1';
 
 function isPdf(url: string) {
   return /\.pdf($|\?)/i.test(url);

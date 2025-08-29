@@ -90,3 +90,34 @@ export function LawyerGuard({ children, fallback }: { children: ReactNode; fallb
   const { hasRole } = usePermissions();
   return hasRole(['admin', 'lawyer']) ? <>{children}</> : <>{fallback}</>;
 }
+
+// Billing permission guards
+export function CreateInvoiceGuard({ children, fallback }: { children: ReactNode; fallback?: ReactNode }) {
+  const { canCreateInvoices } = usePermissions();
+  return canCreateInvoices ? <>{children}</> : <>{fallback}</>;
+}
+
+export function EditInvoiceGuard({ children, fallback }: { children: ReactNode; fallback?: ReactNode }) {
+  const { canEditInvoices } = usePermissions();
+  return canEditInvoices ? <>{children}</> : <>{fallback}</>;
+}
+
+export function DeleteInvoiceGuard({ children, fallback }: { children: ReactNode; fallback?: ReactNode }) {
+  const { canDeleteInvoices } = usePermissions();
+  return canDeleteInvoices ? <>{children}</> : <>{fallback}</>;
+}
+
+export function CreatePaymentGuard({ children, fallback }: { children: ReactNode; fallback?: ReactNode }) {
+  const { canCreatePayments } = usePermissions();
+  return canCreatePayments ? <>{children}</> : <>{fallback}</>;
+}
+
+export function EditPaymentGuard({ children, fallback }: { children: ReactNode; fallback?: ReactNode }) {
+  const { canEditPayments } = usePermissions();
+  return canEditPayments ? <>{children}</> : <>{fallback}</>;
+}
+
+export function DeletePaymentGuard({ children, fallback }: { children: ReactNode; fallback?: ReactNode }) {
+  const { canDeletePayments } = usePermissions();
+  return canDeletePayments ? <>{children}</> : <>{fallback}</>;
+}

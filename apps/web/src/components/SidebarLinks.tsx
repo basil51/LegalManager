@@ -39,6 +39,21 @@ export default function SidebarLinks({ compact = false, locale }: SidebarLinksPr
           {t('Dashboard.calendar.title')}
         </Link>
       </PermissionGuard>
+      <PermissionGuard resource="invoices" action="read">
+        <Link href={`/${locale}/invoices`} className={baseClass}>
+          {t('Dashboard.invoices.title')}
+        </Link>
+      </PermissionGuard>
+      <PermissionGuard resource="payments" action="read">
+        <Link href={`/${locale}/payments`} className={baseClass}>
+          {t('Dashboard.payments.title')}
+        </Link>
+      </PermissionGuard>
+      <PermissionGuard resource="portal" action="read">
+        <Link href={`/${locale}/portal`} className={baseClass}>
+          {t('Portal.title')}
+        </Link>
+      </PermissionGuard>
     </div>
   );
 }

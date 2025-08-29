@@ -22,6 +22,8 @@ export const ROLE_PERMISSIONS: RolePermissions[] = [
       { resource: 'documents', actions: ['create', 'read', 'update', 'delete'] },
       { resource: 'appointments', actions: ['create', 'read', 'update', 'delete'] },
       { resource: 'sessions', actions: ['create', 'read', 'update', 'delete'] },
+      { resource: 'invoices', actions: ['create', 'read', 'update', 'delete'] },
+      { resource: 'payments', actions: ['create', 'read', 'update', 'delete'] },
       { resource: 'system', actions: ['manage'] },
     ],
   },
@@ -34,6 +36,8 @@ export const ROLE_PERMISSIONS: RolePermissions[] = [
       { resource: 'documents', actions: ['create', 'read', 'update'] },
       { resource: 'appointments', actions: ['create', 'read', 'update'] },
       { resource: 'sessions', actions: ['create', 'read', 'update'] },
+      { resource: 'invoices', actions: ['create', 'read', 'update'] },
+      { resource: 'payments', actions: ['create', 'read', 'update'] },
     ],
   },
   {
@@ -45,6 +49,8 @@ export const ROLE_PERMISSIONS: RolePermissions[] = [
       { resource: 'documents', actions: ['create', 'read'] },
       { resource: 'appointments', actions: ['create', 'read', 'update'] },
       { resource: 'sessions', actions: ['read', 'update'] },
+      { resource: 'invoices', actions: ['read'] },
+      { resource: 'payments', actions: ['read'] },
     ],
   },
   {
@@ -53,6 +59,8 @@ export const ROLE_PERMISSIONS: RolePermissions[] = [
       { resource: 'cases', actions: ['read'] },
       { resource: 'documents', actions: ['read'] },
       { resource: 'appointments', actions: ['read'] },
+      { resource: 'invoices', actions: ['read'] },
+      { resource: 'payments', actions: ['read'] },
     ],
   },
 ];
@@ -116,4 +124,16 @@ export const PermissionChecks = {
   
   // System management
   canManageSystem: (userRoles: string[]) => userHasPermission(userRoles, 'system', 'manage'),
+  
+  // Invoice management
+  canCreateInvoices: (userRoles: string[]) => userHasPermission(userRoles, 'invoices', 'create'),
+  canEditInvoices: (userRoles: string[]) => userHasPermission(userRoles, 'invoices', 'update'),
+  canDeleteInvoices: (userRoles: string[]) => userHasPermission(userRoles, 'invoices', 'delete'),
+  canViewInvoices: (userRoles: string[]) => userHasPermission(userRoles, 'invoices', 'read'),
+  
+  // Payment management
+  canCreatePayments: (userRoles: string[]) => userHasPermission(userRoles, 'payments', 'create'),
+  canEditPayments: (userRoles: string[]) => userHasPermission(userRoles, 'payments', 'update'),
+  canDeletePayments: (userRoles: string[]) => userHasPermission(userRoles, 'payments', 'delete'),
+  canViewPayments: (userRoles: string[]) => userHasPermission(userRoles, 'payments', 'read'),
 };

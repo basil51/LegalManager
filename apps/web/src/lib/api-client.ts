@@ -103,6 +103,160 @@ export interface User {
   email: string;
 }
 
+// Billing interfaces
+export enum InvoiceStatus {
+  DRAFT = 'draft',
+  SENT = 'sent',
+  PAID = 'paid',
+  OVERDUE = 'overdue',
+  CANCELLED = 'cancelled',
+  PARTIALLY_PAID = 'partially_paid'
+}
+
+export enum PaymentMethod {
+  CASH = 'cash',
+  CHECK = 'check',
+  BANK_TRANSFER = 'bank_transfer',
+  CREDIT_CARD = 'credit_card',
+  ONLINE_PAYMENT = 'online_payment',
+  OTHER = 'other'
+}
+
+export enum ItemType {
+  SERVICE = 'service',
+  EXPENSE = 'expense',
+  DISBURSEMENT = 'disbursement',
+  FEE = 'fee',
+  OTHER = 'other'
+}
+
+export enum PaymentStatus {
+  PENDING = 'pending',
+  COMPLETED = 'completed',
+  FAILED = 'failed',
+  CANCELLED = 'cancelled',
+  REFUNDED = 'refunded'
+}
+
+export interface InvoiceItem {
+  id: string;
+  description: string;
+  type: ItemType;
+  quantity: number;
+  unit_price: number;
+  total_amount: number;
+  notes?: string | null;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface Invoice {
+  id: string;
+  client: {
+    id: string;
+    first_name: string;
+    last_name: string;
+  };
+  case?: {
+    id: string;
+    case_number: string;
+    title: string;
+  } | null;
+  created_by: {
+    id: string;
+    display_name: string;
+  };
+  invoice_number: string;
+  title: string;
+  description?: string | null;
+  status: InvoiceStatus;
+  subtotal: number;
+  tax_amount: number;
+  discount_amount: number;
+  total_amount: number;
+  paid_amount: number;
+  balance_due: number;
+  issue_date: string;
+  due_date: string;
+  paid_date?: string | null;
+  payment_method?: PaymentMethod | null;
+  payment_reference?: string | null;
+  notes?: string | null;
+  terms_and_conditions?: string | null;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+  items: InvoiceItem[];
+}
+
+export interface CreateInvoiceItemDto {
+  description: string;
+  type: ItemType;
+  quantity: number;
+  unit_price: number;
+  notes?: string;
+}
+
+export interface CreateInvoiceDto {
+  caseId?: string;
+  clientId: string;
+  title: string;
+  description?: string;
+  status?: InvoiceStatus;
+  tax_amount?: number;
+  discount_amount?: number;
+  issue_date: string;
+  due_date: string;
+  payment_method?: PaymentMethod;
+  payment_reference?: string;
+  notes?: string;
+  terms_and_conditions?: string;
+  items: CreateInvoiceItemDto[];
+}
+
+export interface UpdateInvoiceDto extends Partial<CreateInvoiceDto> {}
+
+export interface Payment {
+  id: string;
+  invoice: {
+    id: string;
+    invoice_number: string;
+    title: string;
+  };
+  client: {
+    id: string;
+    first_name: string;
+    last_name: string;
+  };
+  processed_by?: {
+    id: string;
+    display_name: string;
+  } | null;
+  payment_number: string;
+  amount: number;
+  status: PaymentStatus;
+  payment_method: string;
+  reference_number?: string | null;
+  transaction_id?: string | null;
+  payment_date: string;
+  notes?: string | null;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CreatePaymentDto {
+  invoiceId: string;
+  amount: number;
+  status?: PaymentStatus;
+  payment_method: string;
+  reference_number?: string;
+  transaction_id?: string;
+  payment_date: string;
+  notes?: string;
+}
+
 export enum DocumentType {
   CONTRACT = 'contract',
   EVIDENCE = 'evidence',
@@ -151,7 +305,7 @@ class ApiClient {
   private baseURL: string;
 
   constructor() {
-    this.baseURL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:4003/api/v1';
+    this.baseURL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:4005/api/v1';
   }
 
   private async request<T = any>(
@@ -362,6 +516,80 @@ class ApiClient {
   async getDocumentDownloadUrl(id: string): Promise<string> {
     const result = await this.request<{ downloadUrl: string }>(`/documents/${id}/url`);
     return result.downloadUrl;
+  }
+
+  // Billing API
+  async getInvoices(filters?: {
+    search?: string;
+    clientId?: string;
+    caseId?: string;
+    status?: InvoiceStatus;
+  }): Promise<Invoice[]> {
+    const params = new URLSearchParams();
+    if (filters?.search) params.append('search', filters.search);
+    if (filters?.clientId) params.append('clientId', filters.clientId);
+    if (filters?.caseId) params.append('caseId', filters.caseId);
+    if (filters?.status) params.append('status', filters.status);
+    
+    const queryString = params.toString();
+    const endpoint = queryString ? `/billing/invoices?${queryString}` : '/billing/invoices';
+    return this.request<Invoice[]>(endpoint);
+  }
+
+  async getInvoiceById(id: string): Promise<Invoice> {
+    return this.request<Invoice>(`/billing/invoices/${id}`);
+  }
+
+  async createInvoice(data: CreateInvoiceDto): Promise<Invoice> {
+    return this.request<Invoice>('/billing/invoices', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  }
+
+  async updateInvoice(id: string, data: UpdateInvoiceDto): Promise<Invoice> {
+    return this.request<Invoice>(`/billing/invoices/${id}`, {
+      method: 'PATCH',
+      body: JSON.stringify(data),
+    });
+  }
+
+  async deleteInvoice(id: string): Promise<void> {
+    return this.request<void>(`/billing/invoices/${id}`, {
+      method: 'DELETE',
+    });
+  }
+
+  async getPayments(filters?: {
+    invoiceId?: string;
+    clientId?: string;
+    status?: PaymentStatus;
+  }): Promise<Payment[]> {
+    const params = new URLSearchParams();
+    if (filters?.invoiceId) params.append('invoiceId', filters.invoiceId);
+    if (filters?.clientId) params.append('clientId', filters.clientId);
+    if (filters?.status) params.append('status', filters.status);
+    
+    const queryString = params.toString();
+    const endpoint = queryString ? `/billing/payments?${queryString}` : '/billing/payments';
+    return this.request<Payment[]>(endpoint);
+  }
+
+  async getPaymentById(id: string): Promise<Payment> {
+    return this.request<Payment>(`/billing/payments/${id}`);
+  }
+
+  async createPayment(data: CreatePaymentDto): Promise<Payment> {
+    return this.request<Payment>('/billing/payments', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  }
+
+  async deletePayment(id: string): Promise<void> {
+    return this.request<void>(`/billing/payments/${id}`, {
+      method: 'DELETE',
+    });
   }
 
 }
