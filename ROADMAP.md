@@ -9,7 +9,6 @@
 - ✅ Base entities: tenants, users, roles, user_roles
 - ✅ i18n routing with ICU locales (`en`, `ar`, `he`), RTL/LTR support
 - ✅ Complete UI internationalization with all strings translated
-- ✅ Infrastructure: Docker Compose, environment configs
 - ✅ API health endpoints and documentation
 - ✅ Authentication system (JWT-based login/register)
 - ✅ Row Level Security (RLS) for multi-tenant isolation
