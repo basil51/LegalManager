@@ -3,13 +3,13 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
-import { apiClient, Case, Client, InvoiceItem } from '@/lib/api-client';
+import { apiClient, Case, Client, InvoiceItem, ItemType } from '@/lib/api-client';
 import { useToast } from '@/contexts/ToastContext';
 import { CreateInvoiceGuard } from '@/components/PermissionGuard';
 
 interface InvoiceItemForm {
   description: string;
-  type: 'service' | 'expense' | 'disbursement' | 'fee' | 'other';
+  type: ItemType;
   quantity: number;
   unit_price: number;
   amount: number;
@@ -37,7 +37,7 @@ export default function CreateInvoicePage() {
   });
   
   const [invoiceItems, setInvoiceItems] = useState<InvoiceItemForm[]>([
-    { description: '', type: 'service', quantity: 1, unit_price: 0, amount: 0 }
+    { description: '', type: ItemType.SERVICE, quantity: 1, unit_price: 0, amount: 0 }
   ]);
 
   // Check authentication and load data
@@ -99,7 +99,7 @@ export default function CreateInvoicePage() {
   };
 
   const addInvoiceItem = () => {
-    setInvoiceItems([...invoiceItems, { description: '', type: 'service', quantity: 1, unit_price: 0, amount: 0 }]);
+    setInvoiceItems([...invoiceItems, { description: '', type: ItemType.SERVICE, quantity: 1, unit_price: 0, amount: 0 }]);
   };
 
   const removeInvoiceItem = (index: number) => {
@@ -401,8 +401,8 @@ export default function CreateInvoicePage() {
                   {t('Invoices.terms')}
                 </label>
                 <textarea
-                  value={formData.terms}
-                  onChange={(e) => handleInputChange('terms', e.target.value)}
+                  value={formData.terms_and_conditions}
+                  onChange={(e) => handleInputChange('terms_and_conditions', e.target.value)}
                   rows={3}
                   placeholder={t('Invoices.termsPlaceholder')}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"

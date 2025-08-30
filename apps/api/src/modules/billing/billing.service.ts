@@ -117,15 +117,21 @@ export class BillingService {
       await this.invoiceItemRepository.delete({ invoice: { id } });
       
       // Add new items
-      invoice.items = updateInvoiceDto.items.map(item => ({
+      const newItems = updateInvoiceDto.items.map(item => ({
         ...item,
         total_amount: item.quantity * item.unit_price,
         tenant: { id: tenantId },
       }));
+      
+      // Create and save new items
+      const savedItems = await Promise.all(
+        newItems.map(item => this.invoiceItemRepository.save(item))
+      );
+      invoice.items = savedItems;
     }
 
     // Recalculate totals
-    const subtotal = invoice.items.reduce((sum, item) => sum + item.total_amount, 0);
+    const subtotal = (invoice.items || []).reduce((sum, item) => sum + item.total_amount, 0);
     const taxAmount = invoice.tax_amount || 0;
     const discountAmount = invoice.discount_amount || 0;
     const totalAmount = subtotal + taxAmount - discountAmount;
@@ -169,7 +175,7 @@ export class BillingService {
     const payment = this.paymentRepository.create({
       ...createPaymentDto,
       tenant: { id: tenantId },
-      client: { id: invoice.clientId },
+      client: { id: invoice.client.id },
       processed_by: { id: userId },
       payment_number: paymentNumber,
     });

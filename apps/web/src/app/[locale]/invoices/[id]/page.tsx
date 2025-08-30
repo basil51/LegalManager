@@ -235,7 +235,7 @@ export default function InvoiceDetailPage() {
                     {formatCurrency(item.unit_price)}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    {formatCurrency(item.amount)}
+                    {formatCurrency(item.total_amount)}
                   </td>
                 </tr>
               ))}
@@ -312,7 +312,7 @@ export default function InvoiceDetailPage() {
       </div>
 
       {/* Additional Information */}
-      {(invoice.notes || invoice.terms) && (
+      {(invoice.notes || invoice.terms_and_conditions) && (
         <div className="bg-white p-6 rounded-lg shadow-md">
           <h2 className="text-lg font-semibold text-gray-900 mb-4">{t('Invoices.additionalInformation')}</h2>
           
@@ -324,10 +324,10 @@ export default function InvoiceDetailPage() {
               </div>
             )}
             
-            {invoice.terms && (
+            {invoice.terms_and_conditions && (
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">{t('Invoices.terms')}</label>
-                <p className="text-sm text-gray-900 whitespace-pre-wrap">{invoice.terms}</p>
+                <p className="text-sm text-gray-900 whitespace-pre-wrap">{invoice.terms_and_conditions}</p>
               </div>
             )}
           </div>

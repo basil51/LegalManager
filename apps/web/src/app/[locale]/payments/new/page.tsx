@@ -212,7 +212,7 @@ export default function CreatePaymentPage() {
                   <option value={PaymentMethod.CHECK}>{t('Payments.paymentMethod.check')}</option>
                   <option value={PaymentMethod.BANK_TRANSFER}>{t('Payments.paymentMethod.bankTransfer')}</option>
                   <option value={PaymentMethod.CREDIT_CARD}>{t('Payments.paymentMethod.creditCard')}</option>
-                  <option value={PaymentMethod.DEBIT_CARD}>{t('Payments.paymentMethod.debitCard')}</option>
+                  <option value={PaymentMethod.ONLINE_PAYMENT}>{t('Payments.paymentMethod.onlinePayment')}</option>
                   <option value={PaymentMethod.OTHER}>{t('Payments.paymentMethod.other')}</option>
                 </select>
               </div>
