@@ -161,7 +161,7 @@
    - Proper validation for required fields (type and status)
    - Loading states while fetching form data
 
-4. **API Integration**:
+   . **API Integration**:
    - Updated appointment creation API call to include new fields
    - Proper handling of optional client and case IDs
 
