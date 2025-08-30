@@ -6,11 +6,11 @@ import { UserRole } from '../modules/auth/user-role.entity';
 import { Client } from '../modules/clients/client.entity';
 import { Court } from '../modules/courts/court.entity';
 import { Case, CaseStatus, CaseType } from '../modules/cases/case.entity';
-import { Appointment } from '../modules/appointments/appointment.entity';
-import { Document } from '../modules/documents/document.entity';
-import { Invoice } from '../modules/billing/invoice.entity';
-import { InvoiceItem } from '../modules/billing/invoice-item.entity';
-import { Payment } from '../modules/billing/payment.entity';
+import { Appointment, AppointmentType, AppointmentStatus } from '../modules/appointments/appointment.entity';
+import { Document, DocumentType } from '../modules/documents/document.entity';
+import { Invoice, InvoiceStatus, PaymentMethod } from '../modules/billing/invoice.entity';
+import { InvoiceItem, ItemType } from '../modules/billing/invoice-item.entity';
+import { Payment, PaymentStatus } from '../modules/billing/payment.entity';
 import * as bcrypt from 'bcrypt';
 
 export async function seedComprehensiveData(dataSource: DataSource) {
@@ -243,8 +243,521 @@ export async function seedComprehensiveData(dataSource: DataSource) {
     createdCases.push(case_);
   }
 
+  // Create appointments
+  const appointments = [
+    {
+      title: 'Initial Consultation - Doe Case',
+      description: 'First meeting with John Doe to discuss employment case',
+      type: AppointmentType.CONSULTATION,
+      status: AppointmentStatus.CONFIRMED,
+      scheduled_at: new Date('2024-06-20T10:00:00Z'),
+      duration_minutes: 60,
+      location: 'Office Conference Room A',
+      notes: 'Bring employment contract and termination letter',
+      lawyer: lawyer1,
+      client: createdClients[0],
+      case: createdCases[0]
+    },
+    {
+      title: 'Court Hearing - Smith Divorce',
+      description: 'Final hearing for divorce decree',
+      type: AppointmentType.COURT_HEARING,
+      status: AppointmentStatus.SCHEDULED,
+      scheduled_at: new Date('2024-06-25T14:00:00Z'),
+      duration_minutes: 120,
+      location: 'Family Court - Courtroom 3',
+      notes: 'Bring all financial documents and custody agreement',
+      lawyer: lawyer2,
+      client: createdClients[1],
+      case: createdCases[1]
+    },
+    {
+      title: 'Client Meeting - Wilson Contract',
+      description: 'Review contract terms and discuss strategy',
+      type: AppointmentType.CLIENT_MEETING,
+      status: AppointmentStatus.CONFIRMED,
+      scheduled_at: new Date('2024-06-22T15:30:00Z'),
+      duration_minutes: 90,
+      location: 'Office Meeting Room B',
+      notes: 'Prepare contract analysis and damages calculation',
+      lawyer: lawyer1,
+      client: createdClients[2],
+      case: createdCases[2]
+    },
+    {
+      title: 'Document Review - Brown Labor Case',
+      description: 'Review union contract and labor law compliance',
+      type: AppointmentType.DOCUMENT_REVIEW,
+      status: AppointmentStatus.SCHEDULED,
+      scheduled_at: new Date('2024-06-24T09:00:00Z'),
+      duration_minutes: 120,
+      location: 'Office Library',
+      notes: 'Focus on collective bargaining agreement terms',
+      lawyer: lawyer1,
+      client: createdClients[4],
+      case: createdCases[4]
+    },
+    {
+      title: 'Phone Consultation - Johnson Estate',
+      description: 'Follow-up call regarding estate distribution',
+      type: AppointmentType.PHONE_CALL,
+      status: AppointmentStatus.CONFIRMED,
+      scheduled_at: new Date('2024-06-23T11:00:00Z'),
+      duration_minutes: 30,
+      location: 'Phone',
+      notes: 'Discuss final distribution plan',
+      lawyer: lawyer2,
+      client: createdClients[3],
+      case: createdCases[3]
+    },
+    {
+      title: 'Video Call - Doe Case Update',
+      description: 'Weekly update call with John Doe',
+      type: AppointmentType.VIDEO_CALL,
+      status: AppointmentStatus.SCHEDULED,
+      scheduled_at: new Date('2024-06-26T16:00:00Z'),
+      duration_minutes: 45,
+      location: 'Zoom Meeting',
+      meeting_link: 'https://zoom.us/j/123456789',
+      notes: 'Discuss case progress and next steps',
+      lawyer: lawyer1,
+      client: createdClients[0],
+      case: createdCases[0]
+    }
+  ];
+
+  for (const appointmentData of appointments) {
+    const existingAppointment = await appointmentRepository.findOne({
+      where: { title: appointmentData.title }
+    });
+
+    if (!existingAppointment) {
+      const appointment = appointmentRepository.create({
+        ...appointmentData,
+        tenant: tenant
+      });
+      await appointmentRepository.save(appointment);
+      console.log(`Created appointment: ${appointmentData.title}`);
+    }
+  }
+
+  // Create documents
+  const documents = [
+    {
+      filename: 'employment_contract.pdf',
+      original_filename: 'employment_contract.pdf',
+      mime_type: 'application/pdf',
+      file_size: 245760,
+      storage_path: '/documents/employment_contract.pdf',
+      title: 'Employment Contract - TechCorp',
+      description: 'Original employment agreement between John Doe and TechCorp',
+      type: DocumentType.CONTRACT,
+      tags: 'employment,contract,techcorp',
+      case: createdCases[0],
+      client: createdClients[0],
+      uploaded_by: lawyer1
+    },
+    {
+      filename: 'termination_letter.pdf',
+      original_filename: 'termination_letter.pdf',
+      mime_type: 'application/pdf',
+      file_size: 51200,
+      storage_path: '/documents/termination_letter.pdf',
+      title: 'Termination Letter',
+      description: 'Official termination letter from TechCorp',
+      type: DocumentType.CORRESPONDENCE,
+      tags: 'termination,employment,techcorp',
+      case: createdCases[0],
+      client: createdClients[0],
+      uploaded_by: lawyer1
+    },
+    {
+      filename: 'divorce_petition.pdf',
+      original_filename: 'divorce_petition.pdf',
+      mime_type: 'application/pdf',
+      file_size: 102400,
+      storage_path: '/documents/divorce_petition.pdf',
+      title: 'Divorce Petition - Smith Family',
+      description: 'Official divorce petition filed with family court',
+      type: DocumentType.COURT_FILING,
+      tags: 'divorce,family,court',
+      case: createdCases[1],
+      client: createdClients[1],
+      uploaded_by: lawyer2
+    },
+    {
+      filename: 'contract_breach_evidence.pdf',
+      original_filename: 'contract_breach_evidence.pdf',
+      mime_type: 'application/pdf',
+      file_size: 153600,
+      storage_path: '/documents/contract_breach_evidence.pdf',
+      title: 'Contract Breach Evidence',
+      description: 'Documentation of contract violations by Wilson Enterprises',
+      type: DocumentType.EVIDENCE,
+      tags: 'contract,breach,evidence',
+      case: createdCases[2],
+      client: createdClients[2],
+      uploaded_by: lawyer1
+    },
+    {
+      filename: 'will_document.pdf',
+      original_filename: 'will_document.pdf',
+      mime_type: 'application/pdf',
+      file_size: 76800,
+      storage_path: '/documents/will_document.pdf',
+      title: 'Last Will and Testament',
+      description: 'Original will document for Sarah Johnson estate',
+      type: DocumentType.CONTRACT,
+      tags: 'will,estate,planning',
+      case: createdCases[3],
+      client: createdClients[3],
+      uploaded_by: lawyer2
+    },
+    {
+      filename: 'labor_contract.pdf',
+      original_filename: 'labor_contract.pdf',
+      mime_type: 'application/pdf',
+      file_size: 184320,
+      storage_path: '/documents/labor_contract.pdf',
+      title: 'Collective Bargaining Agreement',
+      description: 'Union contract for Brown Industries employees',
+      type: DocumentType.CONTRACT,
+      tags: 'labor,union,contract',
+      case: createdCases[4],
+      client: createdClients[4],
+      uploaded_by: lawyer1
+    }
+  ];
+
+  for (const documentData of documents) {
+    const existingDocument = await documentRepository.findOne({
+      where: { title: documentData.title }
+    });
+
+    if (!existingDocument) {
+      const document = documentRepository.create({
+        ...documentData,
+        tenant: tenant
+      });
+      await documentRepository.save(document);
+      console.log(`Created document: ${documentData.title}`);
+    }
+  }
+
+  // Create invoices
+  const invoices = [
+    {
+      invoice_number: 'INV-2024-001',
+      title: 'Legal Services - Doe Employment Case',
+      description: 'Legal services for employment dispute case',
+      status: InvoiceStatus.SENT,
+      subtotal: 5000.00,
+      tax_amount: 500.00,
+      discount_amount: 0.00,
+      total_amount: 5500.00,
+      paid_amount: 2000.00,
+      balance_due: 3500.00,
+      issue_date: new Date('2024-05-01'),
+      due_date: new Date('2024-06-01'),
+      payment_method: PaymentMethod.BANK_TRANSFER,
+      payment_reference: 'BT-2024-001',
+      terms_and_conditions: 'Payment due within 30 days. Late payments subject to 1.5% monthly interest.',
+      case: createdCases[0],
+      client: createdClients[0],
+      created_by: lawyer1
+    },
+    {
+      invoice_number: 'INV-2024-002',
+      title: 'Legal Services - Smith Divorce Case',
+      description: 'Legal services for divorce proceedings',
+      status: InvoiceStatus.PAID,
+      subtotal: 3000.00,
+      tax_amount: 300.00,
+      discount_amount: 0.00,
+      total_amount: 3300.00,
+      paid_amount: 3300.00,
+      balance_due: 0.00,
+      issue_date: new Date('2024-04-15'),
+      due_date: new Date('2024-05-15'),
+      paid_date: new Date('2024-05-10'),
+      payment_method: PaymentMethod.CREDIT_CARD,
+      payment_reference: 'CC-2024-001',
+      terms_and_conditions: 'Payment due within 30 days. Late payments subject to 1.5% monthly interest.',
+      case: createdCases[1],
+      client: createdClients[1],
+      created_by: lawyer2
+    },
+    {
+      invoice_number: 'INV-2024-003',
+      title: 'Legal Services - Wilson Contract Case',
+      description: 'Legal services for contract breach case',
+      status: InvoiceStatus.DRAFT,
+      subtotal: 7500.00,
+      tax_amount: 750.00,
+      discount_amount: 500.00,
+      total_amount: 7750.00,
+      paid_amount: 0.00,
+      balance_due: 7750.00,
+      issue_date: new Date('2024-06-01'),
+      due_date: new Date('2024-07-01'),
+      terms_and_conditions: 'Payment due within 30 days. Late payments subject to 1.5% monthly interest.',
+      case: createdCases[2],
+      client: createdClients[2],
+      created_by: lawyer1
+    },
+    {
+      invoice_number: 'INV-2024-004',
+      title: 'Legal Services - Johnson Estate',
+      description: 'Estate planning and will validation services',
+      status: InvoiceStatus.PAID,
+      subtotal: 2000.00,
+      tax_amount: 200.00,
+      discount_amount: 0.00,
+      total_amount: 2200.00,
+      paid_amount: 2200.00,
+      balance_due: 0.00,
+      issue_date: new Date('2024-03-01'),
+      due_date: new Date('2024-04-01'),
+      paid_date: new Date('2024-03-25'),
+      payment_method: PaymentMethod.CHECK,
+      payment_reference: 'CHK-2024-001',
+      terms_and_conditions: 'Payment due within 30 days. Late payments subject to 1.5% monthly interest.',
+      case: createdCases[3],
+      client: createdClients[3],
+      created_by: lawyer2
+    },
+    {
+      invoice_number: 'INV-2024-005',
+      title: 'Legal Services - Brown Labor Case',
+      description: 'Labor law and union negotiation services',
+      status: InvoiceStatus.OVERDUE,
+      subtotal: 4000.00,
+      tax_amount: 400.00,
+      discount_amount: 0.00,
+      total_amount: 4400.00,
+      paid_amount: 1000.00,
+      balance_due: 3400.00,
+      issue_date: new Date('2024-04-01'),
+      due_date: new Date('2024-05-01'),
+      terms_and_conditions: 'Payment due within 30 days. Late payments subject to 1.5% monthly interest.',
+      case: createdCases[4],
+      client: createdClients[4],
+      created_by: lawyer1
+    }
+  ];
+
+  const createdInvoices = [];
+  for (const invoiceData of invoices) {
+    let invoice = await invoiceRepository.findOne({
+      where: { invoice_number: invoiceData.invoice_number }
+    });
+
+    if (!invoice) {
+      invoice = invoiceRepository.create({
+        ...invoiceData,
+        tenant: tenant
+      });
+      await invoiceRepository.save(invoice);
+      console.log(`Created invoice: ${invoiceData.invoice_number} - ${invoiceData.title}`);
+      createdInvoices.push(invoice);
+    }
+  }
+
+  // Create invoice items
+  const invoiceItems = [
+    {
+      description: 'Initial consultation and case review',
+      type: ItemType.SERVICE,
+      quantity: 2,
+      unit_price: 250.00,
+      total_amount: 500.00,
+      notes: '2 hours of initial consultation',
+      invoice: createdInvoices[0]
+    },
+    {
+      description: 'Document preparation and filing',
+      type: ItemType.SERVICE,
+      quantity: 8,
+      unit_price: 200.00,
+      total_amount: 1600.00,
+      notes: '8 hours of document preparation',
+      invoice: createdInvoices[0]
+    },
+    {
+      description: 'Court appearance and representation',
+      type: ItemType.SERVICE,
+      quantity: 12,
+      unit_price: 300.00,
+      total_amount: 3600.00,
+      notes: '12 hours of court representation',
+      invoice: createdInvoices[0]
+    },
+    {
+      description: 'Divorce petition preparation',
+      type: ItemType.SERVICE,
+      quantity: 5,
+      unit_price: 200.00,
+      total_amount: 1000.00,
+      notes: '5 hours of petition preparation',
+      invoice: createdInvoices[1]
+    },
+    {
+      description: 'Mediation sessions',
+      type: ItemType.SERVICE,
+      quantity: 8,
+      unit_price: 250.00,
+      total_amount: 2000.00,
+      notes: '8 hours of mediation',
+      invoice: createdInvoices[1]
+    },
+    {
+      description: 'Contract analysis and review',
+      type: ItemType.SERVICE,
+      quantity: 10,
+      unit_price: 300.00,
+      total_amount: 3000.00,
+      notes: '10 hours of contract analysis',
+      invoice: createdInvoices[2]
+    },
+    {
+      description: 'Legal research and case preparation',
+      type: ItemType.SERVICE,
+      quantity: 15,
+      unit_price: 300.00,
+      total_amount: 4500.00,
+      notes: '15 hours of legal research',
+      invoice: createdInvoices[2]
+    },
+    {
+      description: 'Estate planning consultation',
+      type: ItemType.SERVICE,
+      quantity: 3,
+      unit_price: 200.00,
+      total_amount: 600.00,
+      notes: '3 hours of estate planning',
+      invoice: createdInvoices[3]
+    },
+    {
+      description: 'Will preparation and validation',
+      type: ItemType.SERVICE,
+      quantity: 7,
+      unit_price: 200.00,
+      total_amount: 1400.00,
+      notes: '7 hours of will preparation',
+      invoice: createdInvoices[3]
+    },
+    {
+      description: 'Labor law consultation',
+      type: ItemType.SERVICE,
+      quantity: 6,
+      unit_price: 250.00,
+      total_amount: 1500.00,
+      notes: '6 hours of labor law consultation',
+      invoice: createdInvoices[4]
+    },
+    {
+      description: 'Union negotiation support',
+      type: ItemType.SERVICE,
+      quantity: 10,
+      unit_price: 250.00,
+      total_amount: 2500.00,
+      notes: '10 hours of union negotiation support',
+      invoice: createdInvoices[4]
+    }
+  ];
+
+  for (const itemData of invoiceItems) {
+    const existingItem = await invoiceItemRepository.findOne({
+      where: { 
+        description: itemData.description,
+        invoice: { id: itemData.invoice.id }
+      }
+    });
+
+    if (!existingItem) {
+      const item = invoiceItemRepository.create({
+        ...itemData,
+        tenant: tenant
+      });
+      await invoiceItemRepository.save(item);
+      console.log(`Created invoice item: ${itemData.description}`);
+    }
+  }
+
+  // Create payments
+  const payments = [
+    {
+      payment_number: 'PAY-2024-001',
+      amount: 2000.00,
+      status: PaymentStatus.COMPLETED,
+      payment_method: 'bank_transfer',
+      reference_number: 'BT-2024-001',
+      payment_date: new Date('2024-05-15'),
+      notes: 'Partial payment for employment case',
+      invoice: createdInvoices[0],
+      client: createdClients[0],
+      processed_by: adminUser
+    },
+    {
+      payment_number: 'PAY-2024-002',
+      amount: 3300.00,
+      status: PaymentStatus.COMPLETED,
+      payment_method: 'credit_card',
+      reference_number: 'CC-2024-001',
+      payment_date: new Date('2024-05-10'),
+      notes: 'Full payment for divorce case',
+      invoice: createdInvoices[1],
+      client: createdClients[1],
+      processed_by: adminUser
+    },
+    {
+      payment_number: 'PAY-2024-003',
+      amount: 2200.00,
+      status: PaymentStatus.COMPLETED,
+      payment_method: 'check',
+      reference_number: 'CHK-2024-001',
+      payment_date: new Date('2024-03-25'),
+      notes: 'Full payment for estate planning',
+      invoice: createdInvoices[3],
+      client: createdClients[3],
+      processed_by: adminUser
+    },
+    {
+      payment_number: 'PAY-2024-004',
+      amount: 1000.00,
+      status: PaymentStatus.COMPLETED,
+      payment_method: 'cash',
+      reference_number: 'CASH-2024-001',
+      payment_date: new Date('2024-04-15'),
+      notes: 'Partial payment for labor case',
+      invoice: createdInvoices[4],
+      client: createdClients[4],
+      processed_by: adminUser
+    }
+  ];
+
+  for (const paymentData of payments) {
+    const existingPayment = await paymentRepository.findOne({
+      where: { payment_number: paymentData.payment_number }
+    });
+
+    if (!existingPayment) {
+      const payment = paymentRepository.create({
+        ...paymentData,
+        tenant: tenant
+      });
+      await paymentRepository.save(payment);
+      console.log(`Created payment: ${paymentData.payment_number} - $${paymentData.amount}`);
+    }
+  }
+
   console.log('✅ Comprehensive test data seeding completed successfully!');
   console.log(`Created ${createdCourts.length} courts`);
   console.log(`Created ${createdClients.length} clients`);
   console.log(`Created ${createdCases.length} cases`);
+  console.log(`Created ${appointments.length} appointments`);
+  console.log(`Created ${documents.length} documents`);
+  console.log(`Created ${createdInvoices.length} invoices`);
+  console.log(`Created ${invoiceItems.length} invoice items`);
+  console.log(`Created ${payments.length} payments`);
 }
