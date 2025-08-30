@@ -1,6 +1,7 @@
 import { DataSource } from 'typeorm';
 import { seedRoles } from './roles.seed';
 import { seedUsers } from './users.seed';
+import { seedComprehensiveData } from './comprehensive.seed';
 
 async function runSeeds() {
   const dataSource = new DataSource({
@@ -18,9 +19,12 @@ async function runSeeds() {
     await dataSource.initialize();
     console.log('Database connected successfully');
 
-    // Run seeds
+    // Run basic seeds first
     await seedRoles(dataSource);
     await seedUsers(dataSource);
+
+    // Run comprehensive test data
+    await seedComprehensiveData(dataSource);
 
     console.log('All seeds completed successfully');
   } catch (error) {
