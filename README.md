@@ -54,7 +54,6 @@ pnpm dev
 - `DB_SCHEMA.md` - Database structure
 - `ARCHITECTURE.md` - System architecture
 - `OPERATIONS-SYSTEM.md` - System-based development operations
-- `MIGRATION-GUIDE.md` - Guide to migrate from Docker to system-based
 
 ## 🔄 Keeping Documentation Updated
 Run the status update script to keep documentation current:
