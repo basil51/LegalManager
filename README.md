@@ -10,23 +10,11 @@ and infrastructure for PostgreSQL/Redis/MinIO.
 - 🔄 **Phase 1 Ready**: Core case management features ready to implement
 - 🌐 **Multilingual**: English, Arabic, Hebrew with RTL/LTR support
 - 🏗️ **Stable Stack**: Proven stable versions (Next.js 14, React 18)
+- 🚀 **System-Based Development**: Optimized for performance and debugging
 
 ## 🚀 Quick Start
 
-### Option 1: Docker-Based Development (Current)
-```bash
-# Install dependencies
-pnpm install
-
-# Start infrastructure services
-docker compose -f infra/docker-compose.dev.yml up -d
-
-# Start applications
-pnpm -F @legal/api dev
-pnpm -F @legal/web dev
-```
-
-### Option 2: System-Based Development (Recommended)
+### System-Based Development Setup
 ```bash
 # Run automated setup (installs PostgreSQL, Redis, MinIO)
 chmod +x scripts/setup-system.sh
@@ -65,7 +53,6 @@ pnpm dev
 - `I18N_GUIDE.md` - Internationalization setup
 - `DB_SCHEMA.md` - Database structure
 - `ARCHITECTURE.md` - System architecture
-- `OPERATIONS.md` - Docker-based development operations
 - `OPERATIONS-SYSTEM.md` - System-based development operations
 - `MIGRATION-GUIDE.md` - Guide to migrate from Docker to system-based
 
@@ -75,17 +62,39 @@ Run the status update script to keep documentation current:
 ./scripts/update-status.sh
 ```
 
-## 🛠️ Development Options
-
-### Docker-Based Development
-- **Pros**: Consistent environment, easy setup, isolation
-- **Cons**: Slower startup, higher memory usage, Docker overhead
-- **Best for**: Teams that prefer Docker, production parity requirements
+## 🛠️ Development Setup
 
 ### System-Based Development
 - **Pros**: Faster performance, lower resource usage, better debugging
 - **Cons**: Requires system setup, potential conflicts with existing services
 - **Best for**: Individual developers, performance-focused development
 
-## 🔧 Migration
-If you're currently using Docker and want to switch to system-based development, see `MIGRATION-GUIDE.md` for detailed instructions.
+## 🔧 Service Management
+
+### Start Services
+```bash
+./scripts/start-services.sh
+```
+
+### Stop Services
+```bash
+./scripts/stop-services.sh
+```
+
+### Manual Service Control
+```bash
+# PostgreSQL
+sudo systemctl start postgresql    # Linux
+brew services start postgresql@16   # macOS
+
+# Redis
+sudo systemctl start redis         # Linux
+brew services start redis          # macOS
+
+# MinIO
+minio server /opt/minio/data --console-address :9001 &
+```
+
+## 📚 Test Credentials
+- **Admin**: admin@legalfirm.com / password123
+- **Lawyer**: lawyer1@legalfirm.com / password123
