@@ -24,6 +24,7 @@ export const ROLE_PERMISSIONS: RolePermissions[] = [
       { resource: 'sessions', actions: ['create', 'read', 'update', 'delete'] },
       { resource: 'invoices', actions: ['create', 'read', 'update', 'delete'] },
       { resource: 'payments', actions: ['create', 'read', 'update', 'delete'] },
+      { resource: 'trust_accounts', actions: ['create', 'read', 'update', 'delete'] },
       { resource: 'system', actions: ['manage'] },
     ],
   },
@@ -38,6 +39,7 @@ export const ROLE_PERMISSIONS: RolePermissions[] = [
       { resource: 'sessions', actions: ['create', 'read', 'update'] },
       { resource: 'invoices', actions: ['create', 'read', 'update'] },
       { resource: 'payments', actions: ['create', 'read', 'update'] },
+      { resource: 'trust_accounts', actions: ['create', 'read', 'update'] },
     ],
   },
   {
@@ -61,6 +63,7 @@ export const ROLE_PERMISSIONS: RolePermissions[] = [
       { resource: 'appointments', actions: ['read'] },
       { resource: 'invoices', actions: ['read'] },
       { resource: 'payments', actions: ['read'] },
+      { resource: 'trust_accounts', actions: ['read'] },
     ],
   },
 ];
@@ -136,4 +139,10 @@ export const PermissionChecks = {
   canEditPayments: (userRoles: string[]) => userHasPermission(userRoles, 'payments', 'update'),
   canDeletePayments: (userRoles: string[]) => userHasPermission(userRoles, 'payments', 'delete'),
   canViewPayments: (userRoles: string[]) => userHasPermission(userRoles, 'payments', 'read'),
+  
+  // Trust account management
+  canCreateTrustAccounts: (userRoles: string[]) => userHasPermission(userRoles, 'trust_accounts', 'create'),
+  canEditTrustAccounts: (userRoles: string[]) => userHasPermission(userRoles, 'trust_accounts', 'update'),
+  canDeleteTrustAccounts: (userRoles: string[]) => userHasPermission(userRoles, 'trust_accounts', 'delete'),
+  canViewTrustAccounts: (userRoles: string[]) => userHasPermission(userRoles, 'trust_accounts', 'read'),
 };

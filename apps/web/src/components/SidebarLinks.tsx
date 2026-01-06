@@ -49,6 +49,11 @@ export default function SidebarLinks({ compact = false, locale }: SidebarLinksPr
           {t('Dashboard.payments.title')}
         </Link>
       </PermissionGuard>
+      <PermissionGuard resource="trust_accounts" action="read">
+        <Link href={`/${locale}/trust-accounts`} className={baseClass}>
+          {t('Dashboard.trustAccounts.title')}
+        </Link>
+      </PermissionGuard>
       <PermissionGuard resource="portal" action="read">
         <Link href={`/${locale}/portal`} className={baseClass}>
           {t('Portal.title')}

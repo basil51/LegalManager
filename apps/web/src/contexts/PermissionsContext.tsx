@@ -44,6 +44,10 @@ interface PermissionsContextType {
   canEditPayments: boolean;
   canDeletePayments: boolean;
   canViewPayments: boolean;
+  canCreateTrustAccounts: boolean;
+  canEditTrustAccounts: boolean;
+  canDeleteTrustAccounts: boolean;
+  canViewTrustAccounts: boolean;
   setUser: (user: User | null) => void;
 }
 
@@ -129,6 +133,10 @@ export function PermissionsProvider({ children }: { children: ReactNode }) {
     canEditPayments: PermissionChecks.canEditPayments(userRoles),
     canDeletePayments: PermissionChecks.canDeletePayments(userRoles),
     canViewPayments: PermissionChecks.canViewPayments(userRoles),
+    canCreateTrustAccounts: PermissionChecks.canCreateTrustAccounts(userRoles),
+    canEditTrustAccounts: PermissionChecks.canEditTrustAccounts(userRoles),
+    canDeleteTrustAccounts: PermissionChecks.canDeleteTrustAccounts(userRoles),
+    canViewTrustAccounts: PermissionChecks.canViewTrustAccounts(userRoles),
     setUser,
   };
 

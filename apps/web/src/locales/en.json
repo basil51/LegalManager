@@ -66,6 +66,11 @@
       "description": "Manage payments and transactions",
       "button": "View Payments"
     },
+    "trustAccounts": {
+      "title": "Trust Accounts",
+      "description": "Manage trust accounts and transactions",
+      "button": "View Trust Accounts"
+    },
     "recentActivity": "Recent Activity",
     "noActivity": "No recent activity to display.",
     "activityDescription": "This will show recent cases, documents, and appointments once the core modules are implemented."
@@ -81,7 +86,11 @@
     "edit": "Edit",
     "delete": "Delete",
     "cancel": "Cancel",
-    "saving": "Saving..."
+    "save": "Save",
+    "saving": "Saving...",
+    "actions": "Actions",
+    "noPermission": "You don't have permission to perform this action",
+    "createdBy": "Created By"
   },
   "App": {
     "name": "LegalManager"
@@ -428,6 +437,67 @@
     "errors": {
       "clientRequired": "Client is required",
       "amountRequired": "Payment amount is required"
+    }
+  },
+  "TrustAccounts": {
+    "title": "Trust Accounts Management",
+    "createAccount": "Create Trust Account",
+    "searchPlaceholder": "Search by account number or client name...",
+    "accountNumber": "Account Number",
+    "bankName": "Bank Name",
+    "balance": "Balance",
+    "allClients": "All Clients",
+    "noAccounts": "No trust accounts found",
+    "confirmDelete": "Are you sure you want to delete this trust account?",
+    "deleteSuccess": "Trust account deleted successfully",
+    "createSuccess": "Trust account created successfully",
+    "updateSuccess": "Trust account updated successfully",
+    "client": "Client",
+    "case": "Case",
+    "bankAccountNumber": "Bank Account Number",
+    "routingNumber": "Routing Number",
+    "initialBalance": "Initial Balance",
+    "notes": "Notes",
+    "selectClient": "Select a client",
+    "selectCase": "Select a case (optional)",
+    "accountNumberPlaceholder": "Enter account number",
+    "bankNamePlaceholder": "Enter bank name",
+    "bankAccountNumberPlaceholder": "Enter bank account number",
+    "routingNumberPlaceholder": "Enter routing number",
+    "initialBalancePlaceholder": "Enter initial balance",
+    "notesPlaceholder": "Enter notes",
+    "transactions": "Transactions",
+    "transactionType": "Transaction Type",
+    "transactionDate": "Transaction Date",
+    "amount": "Amount",
+    "description": "Description",
+    "referenceNumber": "Reference Number",
+    "checkNumber": "Check Number",
+    "createTransaction": "Create Transaction",
+    "transactionTypes": {
+      "deposit": "Deposit",
+      "withdrawal": "Withdrawal",
+      "transfer": "Transfer",
+      "fee": "Fee",
+      "interest": "Interest",
+      "adjustment": "Adjustment"
+    },
+    "reconcile": "Reconcile",
+    "reconciliation": "Reconciliation",
+    "statementBalance": "Statement Balance",
+    "accountBalance": "Account Balance",
+    "difference": "Difference",
+    "reconciled": "Reconciled",
+    "notReconciled": "Not Reconciled",
+    "noTransactions": "No transactions found",
+    "accountNotFound": "Trust account not found",
+    "transactionCreated": "Transaction created successfully",
+    "basicInformation": "Basic Information",
+    "errors": {
+      "clientRequired": "Client is required",
+      "accountNumberRequired": "Account number is required",
+      "invalidBalance": "Balance cannot be negative",
+      "amountRequired": "Amount is required"
     }
   },
   "Portal": {

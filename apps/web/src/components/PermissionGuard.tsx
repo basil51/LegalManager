@@ -121,3 +121,19 @@ export function DeletePaymentGuard({ children, fallback }: { children: ReactNode
   const { canDeletePayments } = usePermissions();
   return canDeletePayments ? <>{children}</> : <>{fallback}</>;
 }
+
+// Trust Account permission guards
+export function CreateTrustAccountGuard({ children, fallback }: { children: ReactNode; fallback?: ReactNode }) {
+  const { canCreateTrustAccounts } = usePermissions();
+  return canCreateTrustAccounts ? <>{children}</> : <>{fallback}</>;
+}
+
+export function EditTrustAccountGuard({ children, fallback }: { children: ReactNode; fallback?: ReactNode }) {
+  const { canEditTrustAccounts } = usePermissions();
+  return canEditTrustAccounts ? <>{children}</> : <>{fallback}</>;
+}
+
+export function DeleteTrustAccountGuard({ children, fallback }: { children: ReactNode; fallback?: ReactNode }) {
+  const { canDeleteTrustAccounts } = usePermissions();
+  return canDeleteTrustAccounts ? <>{children}</> : <>{fallback}</>;
+}

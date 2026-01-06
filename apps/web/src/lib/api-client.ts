@@ -297,6 +297,96 @@ export interface UploadDocumentData {
 export interface UpdateDocumentData {
   title?: string;
   description?: string;
+}
+
+export enum TrustTransactionType {
+  DEPOSIT = 'deposit',
+  WITHDRAWAL = 'withdrawal',
+  TRANSFER = 'transfer',
+  FEE = 'fee',
+  INTEREST = 'interest',
+  ADJUSTMENT = 'adjustment'
+}
+
+export interface TrustAccount {
+  id: string;
+  client: {
+    id: string;
+    first_name: string;
+    last_name: string;
+  };
+  case?: {
+    id: string;
+    case_number: string;
+    title: string;
+  } | null;
+  account_number: string;
+  bank_name?: string | null;
+  bank_account_number?: string | null;
+  routing_number?: string | null;
+  balance: number;
+  notes?: string | null;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+  transactions?: TrustTransaction[];
+}
+
+export interface CreateTrustAccountDto {
+  clientId: string;
+  caseId?: string;
+  account_number: string;
+  bank_name?: string;
+  bank_account_number?: string;
+  routing_number?: string;
+  initial_balance?: number;
+  notes?: string;
+}
+
+export interface UpdateTrustAccountDto extends Partial<CreateTrustAccountDto> {
+  is_active?: boolean;
+}
+
+export interface TrustTransaction {
+  id: string;
+  trust_account: {
+    id: string;
+    account_number: string;
+  };
+  case?: {
+    id: string;
+    case_number: string;
+  } | null;
+  created_by: {
+    id: string;
+    display_name: string;
+  };
+  transaction_type: TrustTransactionType;
+  amount: number;
+  description?: string | null;
+  reference_number?: string | null;
+  check_number?: string | null;
+  transaction_date: string;
+  notes?: string | null;
+  is_active: boolean;
+  created_at: string;
+}
+
+export interface CreateTrustTransactionDto {
+  trust_account_id: string;
+  caseId?: string;
+  transaction_type: TrustTransactionType;
+  amount: number;
+  description?: string;
+  reference_number?: string;
+  check_number?: string;
+  transaction_date: string;
+  notes?: string;
+}
+
+export interface UpdateDocumentData {
+  title?: string;
+  description?: string;
   type?: DocumentType;
   tags?: string[];
 }
@@ -589,6 +679,82 @@ class ApiClient {
   async deletePayment(id: string): Promise<void> {
     return this.request<void>(`/billing/payments/${id}`, {
       method: 'DELETE',
+    });
+  }
+
+  // Trust Accounts
+  async getTrustAccounts(filters?: {
+    search?: string;
+    clientId?: string;
+    caseId?: string;
+  }): Promise<TrustAccount[]> {
+    const params = new URLSearchParams();
+    if (filters?.search) params.append('search', filters.search);
+    if (filters?.clientId) params.append('clientId', filters.clientId);
+    if (filters?.caseId) params.append('caseId', filters.caseId);
+    
+    const queryString = params.toString();
+    const endpoint = queryString ? `/trust-accounts?${queryString}` : '/trust-accounts';
+    return this.request<TrustAccount[]>(endpoint);
+  }
+
+  async getTrustAccountById(id: string): Promise<TrustAccount> {
+    return this.request<TrustAccount>(`/trust-accounts/${id}`);
+  }
+
+  async createTrustAccount(data: CreateTrustAccountDto): Promise<TrustAccount> {
+    return this.request<TrustAccount>('/trust-accounts', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  }
+
+  async updateTrustAccount(id: string, data: UpdateTrustAccountDto): Promise<TrustAccount> {
+    return this.request<TrustAccount>(`/trust-accounts/${id}`, {
+      method: 'PATCH',
+      body: JSON.stringify(data),
+    });
+  }
+
+  async deleteTrustAccount(id: string): Promise<void> {
+    return this.request<void>(`/trust-accounts/${id}`, {
+      method: 'DELETE',
+    });
+  }
+
+  async getTrustAccountTransactions(trustAccountId: string, filters?: {
+    transaction_type?: TrustTransactionType;
+    date_from?: string;
+    date_to?: string;
+  }): Promise<TrustTransaction[]> {
+    const params = new URLSearchParams();
+    if (filters?.transaction_type) params.append('transaction_type', filters.transaction_type);
+    if (filters?.date_from) params.append('date_from', filters.date_from);
+    if (filters?.date_to) params.append('date_to', filters.date_to);
+    
+    const queryString = params.toString();
+    const endpoint = queryString 
+      ? `/trust-accounts/${trustAccountId}/transactions?${queryString}`
+      : `/trust-accounts/${trustAccountId}/transactions`;
+    return this.request<TrustTransaction[]>(endpoint);
+  }
+
+  async createTrustTransaction(trustAccountId: string, data: CreateTrustTransactionDto): Promise<TrustTransaction> {
+    return this.request<TrustTransaction>(`/trust-accounts/${trustAccountId}/transactions`, {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  }
+
+  async reconcileTrustAccount(id: string, statementBalance: number): Promise<{
+    accountBalance: number;
+    statementBalance: number;
+    difference: number;
+    reconciled: boolean;
+  }> {
+    return this.request(`/trust-accounts/${id}/reconcile`, {
+      method: 'POST',
+      body: JSON.stringify({ statement_balance: statementBalance }),
     });
   }
 

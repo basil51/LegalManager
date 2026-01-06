@@ -66,6 +66,11 @@
       "description": "ניהול תשלומים ועסקאות",
       "button": "צפה בתשלומים"
     },
+    "trustAccounts": {
+      "title": "חשבונות נאמנות",
+      "description": "ניהול חשבונות נאמנות ועסקאות",
+      "button": "צפה בחשבונות נאמנות"
+    },
     "recentActivity": "פעילות אחרונה",
     "noActivity": "אין פעילות אחרונה להצגה.",
     "activityDescription": "יוצגו תיקים, מסמכים ופגישות אחרונות לאחר יישום המודולים הבסיסיים."
@@ -81,7 +86,11 @@
     "edit": "עריכה",
     "delete": "מחיקה",
     "cancel": "בטל",
-    "saving": "שומר..."
+    "save": "שמור",
+    "saving": "שומר...",
+    "actions": "פעולות",
+    "noPermission": "אין לך הרשאה לבצע פעולה זו",
+    "createdBy": "נוצר על ידי"
   },
   "App": {
     "name": "מנהל משפטי"
@@ -428,6 +437,67 @@
     "errors": {
       "clientRequired": "לקוח נדרש",
       "amountRequired": "סכום התשלום נדרש"
+    }
+  },
+  "TrustAccounts": {
+    "title": "ניהול חשבונות נאמנות",
+    "createAccount": "צור חשבון נאמנות",
+    "searchPlaceholder": "חפש לפי מספר חשבון או שם לקוח...",
+    "accountNumber": "מספר חשבון",
+    "bankName": "שם הבנק",
+    "balance": "יתרה",
+    "allClients": "כל הלקוחות",
+    "noAccounts": "לא נמצאו חשבונות נאמנות",
+    "confirmDelete": "האם אתה בטוח שברצונך למחוק את חשבון הנאמנות הזה?",
+    "deleteSuccess": "חשבון נאמנות נמחק בהצלחה",
+    "createSuccess": "חשבון נאמנות נוצר בהצלחה",
+    "updateSuccess": "חשבון נאמנות עודכן בהצלחה",
+    "client": "לקוח",
+    "case": "תיק",
+    "bankAccountNumber": "מספר חשבון בנק",
+    "routingNumber": "מספר ניתוב",
+    "initialBalance": "יתרה ראשונית",
+    "notes": "הערות",
+    "selectClient": "בחר לקוח",
+    "selectCase": "בחר תיק (אופציונלי)",
+    "accountNumberPlaceholder": "הכנס מספר חשבון",
+    "bankNamePlaceholder": "הכנס שם בנק",
+    "bankAccountNumberPlaceholder": "הכנס מספר חשבון בנק",
+    "routingNumberPlaceholder": "הכנס מספר ניתוב",
+    "initialBalancePlaceholder": "הכנס יתרה ראשונית",
+    "notesPlaceholder": "הכנס הערות",
+    "transactions": "עסקאות",
+    "transactionType": "סוג עסקה",
+    "transactionDate": "תאריך עסקה",
+    "amount": "סכום",
+    "description": "תיאור",
+    "referenceNumber": "מספר הפניה",
+    "checkNumber": "מספר צ'ק",
+    "createTransaction": "צור עסקה",
+    "transactionTypes": {
+      "deposit": "הפקדה",
+      "withdrawal": "משיכה",
+      "transfer": "העברה",
+      "fee": "עמלה",
+      "interest": "ריבית",
+      "adjustment": "התאמה"
+    },
+    "reconcile": "התאמה",
+    "reconciliation": "פיוס",
+    "statementBalance": "יתרת דוח",
+    "accountBalance": "יתרת חשבון",
+    "difference": "הפרש",
+    "reconciled": "מותאם",
+    "notReconciled": "לא מותאם",
+    "noTransactions": "לא נמצאו עסקאות",
+    "accountNotFound": "חשבון נאמנות לא נמצא",
+    "transactionCreated": "עסקה נוצרה בהצלחה",
+    "basicInformation": "מידע בסיסי",
+    "errors": {
+      "clientRequired": "לקוח נדרש",
+      "accountNumberRequired": "מספר חשבון נדרש",
+      "invalidBalance": "יתרה לא יכולה להיות שלילית",
+      "amountRequired": "סכום נדרש"
     }
   },
   "Portal": {

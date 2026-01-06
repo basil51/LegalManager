@@ -66,6 +66,11 @@
       "description": "إدارة المدفوعات والمعاملات",
       "button": "عرض المدفوعات"
     },
+    "trustAccounts": {
+      "title": "حسابات الائتمان",
+      "description": "إدارة حسابات الائتمان والمعاملات",
+      "button": "عرض حسابات الائتمان"
+    },
     "recentActivity": "النشاط الأخير",
     "noActivity": "لا توجد أنشطة حديثة للعرض.",
     "activityDescription": "سيتم عرض القضايا والمستندات والمواعيد الحديثة بمجرد تنفيذ الوحدات الأساسية."
@@ -81,7 +86,11 @@
     "edit": "تعديل",
     "delete": "حذف",
     "cancel": "إلغاء",
-    "saving": "جاري الحفظ..."
+    "save": "حفظ",
+    "saving": "جاري الحفظ...",
+    "actions": "الإجراءات",
+    "noPermission": "ليس لديك إذن لتنفيذ هذا الإجراء",
+    "createdBy": "تم الإنشاء بواسطة"
   },
   "App": {
     "name": "المدير القانوني"
@@ -428,6 +437,67 @@
     "errors": {
       "clientRequired": "العميل مطلوب",
       "amountRequired": "مبلغ الدفع مطلوب"
+    }
+  },
+  "TrustAccounts": {
+    "title": "إدارة حسابات الائتمان",
+    "createAccount": "إنشاء حساب ائتمان",
+    "searchPlaceholder": "البحث برقم الحساب أو اسم العميل...",
+    "accountNumber": "رقم الحساب",
+    "bankName": "اسم البنك",
+    "balance": "الرصيد",
+    "allClients": "جميع العملاء",
+    "noAccounts": "لم يتم العثور على حسابات ائتمان",
+    "confirmDelete": "هل أنت متأكد من حذف حساب الائتمان هذا؟",
+    "deleteSuccess": "تم حذف حساب الائتمان بنجاح",
+    "createSuccess": "تم إنشاء حساب الائتمان بنجاح",
+    "updateSuccess": "تم تحديث حساب الائتمان بنجاح",
+    "client": "العميل",
+    "case": "القضية",
+    "bankAccountNumber": "رقم الحساب البنكي",
+    "routingNumber": "رقم التوجيه",
+    "initialBalance": "الرصيد الأولي",
+    "notes": "ملاحظات",
+    "selectClient": "اختر عميلاً",
+    "selectCase": "اختر قضية (اختياري)",
+    "accountNumberPlaceholder": "أدخل رقم الحساب",
+    "bankNamePlaceholder": "أدخل اسم البنك",
+    "bankAccountNumberPlaceholder": "أدخل رقم الحساب البنكي",
+    "routingNumberPlaceholder": "أدخل رقم التوجيه",
+    "initialBalancePlaceholder": "أدخل الرصيد الأولي",
+    "notesPlaceholder": "أدخل الملاحظات",
+    "transactions": "المعاملات",
+    "transactionType": "نوع المعاملة",
+    "transactionDate": "تاريخ المعاملة",
+    "amount": "المبلغ",
+    "description": "الوصف",
+    "referenceNumber": "رقم المرجع",
+    "checkNumber": "رقم الشيك",
+    "createTransaction": "إنشاء معاملة",
+    "transactionTypes": {
+      "deposit": "إيداع",
+      "withdrawal": "سحب",
+      "transfer": "تحويل",
+      "fee": "رسوم",
+      "interest": "فائدة",
+      "adjustment": "تسوية"
+    },
+    "reconcile": "التسوية",
+    "reconciliation": "المصالحة",
+    "statementBalance": "رصيد الكشف",
+    "accountBalance": "رصيد الحساب",
+    "difference": "الفرق",
+    "reconciled": "متسق",
+    "notReconciled": "غير متسق",
+    "noTransactions": "لم يتم العثور على معاملات",
+    "accountNotFound": "لم يتم العثور على حساب الائتمان",
+    "transactionCreated": "تم إنشاء المعاملة بنجاح",
+    "basicInformation": "المعلومات الأساسية",
+    "errors": {
+      "clientRequired": "العميل مطلوب",
+      "accountNumberRequired": "رقم الحساب مطلوب",
+      "invalidBalance": "لا يمكن أن يكون الرصيد سالباً",
+      "amountRequired": "المبلغ مطلوب"
     }
   },
   "Portal": {

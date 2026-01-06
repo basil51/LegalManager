@@ -18,6 +18,8 @@ import { Message } from './modules/messages/message.entity';
 import { Invoice } from './modules/billing/invoice.entity';
 import { InvoiceItem } from './modules/billing/invoice-item.entity';
 import { Payment } from './modules/billing/payment.entity';
+import { TrustAccount } from './modules/trust-accounts/trust-account.entity';
+import { TrustTransaction } from './modules/trust-accounts/trust-transaction.entity';
 import { HealthModule } from './modules/health/health.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { TenantsModule } from './modules/tenants/tenants.module';
@@ -30,6 +32,7 @@ import { AppointmentsModule } from './modules/appointments/appointments.module';
 import { MessagesModule } from './modules/messages/messages.module';
 import { UsersModule } from './modules/users/users.module';
 import { BillingModule } from './modules/billing/billing.module';
+import { TrustAccountsModule } from './modules/trust-accounts/trust-accounts.module';
 
 function parseDatabaseUrl(url?: string): Partial<DataSourceOptions> {
   if (!url) return {};
@@ -47,7 +50,7 @@ function parseDatabaseUrl(url?: string): Partial<DataSourceOptions> {
         ssl: false
       })
     }),
-    TypeOrmModule.forFeature([Tenant, User, Role, UserRole, Client, Court, Case, Session, Document, Appointment, Reminder, Message, Invoice, InvoiceItem, Payment]),
+    TypeOrmModule.forFeature([Tenant, User, Role, UserRole, Client, Court, Case, Session, Document, Appointment, Reminder, Message, Invoice, InvoiceItem, Payment, TrustAccount, TrustTransaction]),
     HealthModule,
     AuthModule,
     TenantsModule,
@@ -59,7 +62,8 @@ function parseDatabaseUrl(url?: string): Partial<DataSourceOptions> {
     AppointmentsModule,
     MessagesModule,
     UsersModule,
-    BillingModule
+    BillingModule,
+    TrustAccountsModule
   ],
   controllers: [],
   providers: []
