@@ -1,0 +1,15 @@
+node_modules
+.next
+.env
+.env.*
+*.log
+.git
+.gitignore
+.vscode
+.idea
+coverage
+test
+*.test.ts
+*.spec.ts
+public
+out

@@ -2,6 +2,8 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
+import { APP_GUARD } from '@nestjs/core';
 import { DataSourceOptions } from 'typeorm';
 import { Tenant } from './modules/tenants/tenant.entity';
 import { User } from './modules/users/user.entity';
@@ -42,6 +44,10 @@ function parseDatabaseUrl(url?: string): Partial<DataSourceOptions> {
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
+    ThrottlerModule.forRoot([{
+      ttl: 60000, // 1 minute
+      limit: 100, // 100 requests per minute
+    }]),
     TypeOrmModule.forRootAsync({
       useFactory: () => ({
         ...parseDatabaseUrl(process.env.DATABASE_URL),
@@ -66,6 +72,11 @@ function parseDatabaseUrl(url?: string): Partial<DataSourceOptions> {
     TrustAccountsModule
   ],
   controllers: [],
-  providers: []
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
+    },
+  ]
 })
 export class AppModule {}

@@ -10,12 +10,19 @@ export class MinioService {
   private bucketName: string;
 
   constructor(private configService: ConfigService) {
+    const accessKey = this.configService.get<string>('MINIO_ACCESS_KEY');
+    const secretKey = this.configService.get<string>('MINIO_SECRET_KEY');
+    
+    if (!accessKey || !secretKey || accessKey === 'minio' || secretKey === 'minio12345') {
+      throw new Error('MINIO_ACCESS_KEY and MINIO_SECRET_KEY must be set with strong values in environment variables. Do not use default values in production!');
+    }
+    
     this.minioClient = new Minio.Client({
       endPoint: this.configService.get('MINIO_ENDPOINT', 'localhost'),
       port: parseInt(this.configService.get('MINIO_PORT', '9000')),
       useSSL: this.configService.get('MINIO_USE_SSL', 'false') === 'true',
-      accessKey: this.configService.get('MINIO_ACCESS_KEY', 'minio'),
-      secretKey: this.configService.get('MINIO_SECRET_KEY', 'minio12345'),
+      accessKey,
+      secretKey,
     });
 
     this.bucketName = this.configService.get('MINIO_BUCKET_NAME', 'legal-documents');

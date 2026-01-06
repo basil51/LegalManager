@@ -17,10 +17,16 @@ import { UserRole } from './user-role.entity';
     PassportModule,
     JwtModule.registerAsync({
       imports: [ConfigModule],
-      useFactory: async (configService: ConfigService) => ({
-        secret: configService.get<string>('JWT_SECRET') || 'change-me',
-        signOptions: { expiresIn: '24h' },
-      }),
+      useFactory: async (configService: ConfigService) => {
+        const jwtSecret = configService.get<string>('JWT_SECRET');
+        if (!jwtSecret || jwtSecret === 'change-me') {
+          throw new Error('JWT_SECRET must be set in environment variables. Do not use default values in production!');
+        }
+        return {
+          secret: jwtSecret,
+          signOptions: { expiresIn: configService.get<string>('JWT_EXPIRES_IN', '24h') },
+        };
+      },
       inject: [ConfigService],
     }),
   ],

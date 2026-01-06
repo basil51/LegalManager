@@ -22,6 +22,7 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CurrentTenant } from '../tenants/tenant-context.decorator';
 import { CurrentUser } from '../auth/current-user.decorator';
 import { DocumentType } from './document.entity';
+import { validateFileUpload } from './file-upload.validator';
 
 @Controller('documents')
 @UseGuards(JwtAuthGuard)
@@ -36,45 +37,20 @@ export class DocumentsController {
     @CurrentTenant() tenantId: string,
     @CurrentUser() user: any
   ) {
-    try {
-      console.log('Upload request received:', {
-        fileName: file?.originalname,
-        fileSize: file?.size,
-        title: uploadDocumentDto.title,
-        tenantId,
-        userId: user?.sub,
-        fileBuffer: file?.buffer ? 'present' : 'missing',
-        mimetype: file?.mimetype
-      });
-      
-      if (!file) {
-        throw new Error('No file uploaded');
-      }
-      
-      if (!file.buffer) {
-        throw new Error('File buffer is empty');
-      }
-      
-      return await this.documentsService.uploadDocument(
-        file,
-        uploadDocumentDto.title,
-        uploadDocumentDto.description || null,
-        uploadDocumentDto.type,
-        uploadDocumentDto.caseId || null,
-        uploadDocumentDto.clientId || null,
-        user.sub,
-        tenantId,
-        uploadDocumentDto.tags
-      );
-    } catch (error) {
-      console.error('Upload error in controller:', error);
-      console.error('Error details:', {
-        message: error instanceof Error ? error.message : 'Unknown error',
-        stack: error instanceof Error ? error.stack : 'No stack trace',
-        name: error instanceof Error ? error.name : 'Unknown'
-      });
-      throw error;
-    }
+    // Validate file upload (type, size, security)
+    validateFileUpload(file);
+    
+    return await this.documentsService.uploadDocument(
+      file,
+      uploadDocumentDto.title,
+      uploadDocumentDto.description || null,
+      uploadDocumentDto.type,
+      uploadDocumentDto.caseId || null,
+      uploadDocumentDto.clientId || null,
+      user.sub,
+      tenantId,
+      uploadDocumentDto.tags
+    );
   }
 
   @Get()
