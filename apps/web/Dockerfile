@@ -24,6 +24,10 @@ FROM base AS build
 COPY . .
 
 # Build Next.js app
+# ARG for build-time environment variables
+ARG NEXT_PUBLIC_API_BASE_URL
+ENV NEXT_PUBLIC_API_BASE_URL=${NEXT_PUBLIC_API_BASE_URL}
+
 WORKDIR /app/apps/web
 RUN pnpm build
 

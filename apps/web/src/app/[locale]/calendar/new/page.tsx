@@ -69,7 +69,8 @@ export default function NewAppointmentPage() {
 
       console.log('Sending appointment request:', requestBody);
 
-      const response = await fetch('http://localhost:4005/api/v1/appointments', {
+      const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:4005/api/v1';
+      const response = await fetch(`${apiUrl}/appointments`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

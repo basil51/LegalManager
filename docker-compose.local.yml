@@ -1,0 +1,149 @@
+version: "3.8"
+
+# Local dev compose:
+# - Uses the shared external Traefik from ~/web/traefik
+# - Publishes routes on:
+#   - http://legal.${BASE_DOMAIN} (web frontend)
+#   - http://legal.${BASE_DOMAIN}/api (API backend)
+#
+# Environment variable required:
+#   BASE_DOMAIN - Base domain for the application (e.g., sparkco.localhost)
+#   Set via .env.local file or export BASE_DOMAIN=sparkco.localhost
+#
+# Usage:
+#   export BASE_DOMAIN=sparkco.localhost
+#   docker compose -f docker-compose.local.yml --env-file .env.local up -d --build
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: legal-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-legal}
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-CHANGE_ME_STRONG_PASSWORD}
+      PGDATA: /var/lib/postgresql/data/pgdata
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - legal-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: legal-redis
+    restart: unless-stopped
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD:-CHANGE_ME_STRONG_PASSWORD}
+    volumes:
+      - redis_data:/data
+    networks:
+      - legal-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  minio:
+    image: minio/minio:latest
+    container_name: legal-minio
+    restart: unless-stopped
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-CHANGE_ME_STRONG_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-CHANGE_ME_STRONG_PASSWORD}
+    volumes:
+      - minio_data:/data
+    networks:
+      - legal-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+
+  api:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    container_name: legal-api
+    restart: unless-stopped
+    environment:
+      NODE_ENV: development
+      PORT: 4005
+      DATABASE_URL: postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-CHANGE_ME_STRONG_PASSWORD}@postgres:5432/${POSTGRES_DB:-legal}
+      JWT_SECRET: ${JWT_SECRET:-CHANGE_ME_STRONG_SECRET}
+      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-24h}
+      MINIO_ENDPOINT: minio
+      MINIO_PORT: 9000
+      MINIO_ACCESS_KEY: ${MINIO_ROOT_USER:-CHANGE_ME_STRONG_USER}
+      MINIO_SECRET_KEY: ${MINIO_ROOT_PASSWORD:-CHANGE_ME_STRONG_PASSWORD}
+      MINIO_BUCKET_NAME: ${MINIO_BUCKET_NAME:-legal-documents}
+      MINIO_USE_SSL: "false"
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_PASSWORD: ${REDIS_PASSWORD:-CHANGE_ME_STRONG_PASSWORD}
+      ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:-http://legal.${BASE_DOMAIN}}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+    networks:
+      - legal-network
+      - traefik
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=traefik"
+      - "traefik.http.routers.legal-api.rule=Host(`legal.${BASE_DOMAIN}`) && PathPrefix(`/api`)"
+      - "traefik.http.routers.legal-api.entrypoints=web"
+      - "traefik.http.routers.legal-api.priority=100"
+      - "traefik.http.services.legal-api.loadbalancer.server.port=4005"
+
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+      args:
+        NEXT_PUBLIC_API_BASE_URL: http://legal.${BASE_DOMAIN}/api/v1
+    container_name: legal-web
+    restart: unless-stopped
+    environment:
+      NODE_ENV: development
+      PORT: 3005
+      HOSTNAME: 0.0.0.0
+      NEXT_PUBLIC_API_BASE_URL: http://legal.${BASE_DOMAIN}/api/v1
+    depends_on:
+      - api
+    networks:
+      - legal-network
+      - traefik
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=traefik"
+      - "traefik.http.routers.legal.rule=Host(`legal.${BASE_DOMAIN}`)"
+      - "traefik.http.routers.legal.entrypoints=web"
+      - "traefik.http.services.legal.loadbalancer.server.port=3005"
+
+networks:
+  traefik:
+    external: true
+    name: traefik
+  legal-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+  minio_data:
+    driver: local
+

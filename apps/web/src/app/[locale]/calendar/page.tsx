@@ -163,7 +163,8 @@ export default function CalendarPage() {
     if (!token) return;
 
     try {
-      const response = await fetch('http://localhost:4005/api/v1/appointments', {
+      const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:4005/api/v1';
+      const response = await fetch(`${apiUrl}/appointments`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -218,7 +219,8 @@ export default function CalendarPage() {
     if (!token) return;
 
     try {
-      const response = await fetch(`http://localhost:4005/api/v1/appointments/${appointmentId}`, {
+      const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:4005/api/v1';
+      const response = await fetch(`${apiUrl}/appointments/${appointmentId}`, {
         method: 'DELETE',
         headers: {
           Authorization: `Bearer ${token}`,
@@ -240,7 +242,8 @@ export default function CalendarPage() {
     if (!token) return;
 
     try {
-      const response = await fetch(`http://localhost:4005/api/v1/appointments/${appointmentId}`, {
+      const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:4005/api/v1';
+      const response = await fetch(`${apiUrl}/appointments/${appointmentId}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',

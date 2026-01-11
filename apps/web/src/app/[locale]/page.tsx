@@ -31,7 +31,8 @@ export default function DashboardPage() {
     }
 
     // Fetch user profile
-    fetch('http://localhost:4005/api/v1/auth/profile', {
+    const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:4005/api/v1';
+    fetch(`${apiUrl}/auth/profile`, {
       headers: {
         'Authorization': `Bearer ${token}`,
       },
