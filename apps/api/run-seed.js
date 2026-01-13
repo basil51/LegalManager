@@ -105,15 +105,36 @@ async function seed() {
         await userRepository.save(user);
         console.log(`  ✓ Created user: ${userData.email}`);
 
-        // Assign role
-        const userRole = userRoleRepository.create({
-          userId: user.id,
-          roleId: userData.role.id
+        // Assign role - check if already assigned
+        const existingUserRole = await userRoleRepository.findOne({
+          where: { user: { id: user.id }, role: { id: userData.role.id } }
         });
-        await userRoleRepository.save(userRole);
-        console.log(`    ✓ Assigned role: ${userData.role.name}`);
+        
+        if (!existingUserRole) {
+          const userRole = userRoleRepository.create({
+            user: user,
+            role: userData.role
+          });
+          await userRoleRepository.save(userRole);
+          console.log(`    ✓ Assigned role: ${userData.role.name}`);
+        } else {
+          console.log(`    - Role already assigned: ${userData.role.name}`);
+        }
       } else {
         console.log(`  - User already exists: ${userData.email}`);
+        // Check if user has the role assigned
+        const existingUserRole = await userRoleRepository.findOne({
+          where: { user: { id: user.id }, role: { id: userData.role.id } }
+        });
+        
+        if (!existingUserRole) {
+          const userRole = userRoleRepository.create({
+            user: user,
+            role: userData.role
+          });
+          await userRoleRepository.save(userRole);
+          console.log(`    ✓ Assigned role: ${userData.role.name}`);
+        }
       }
     }
 
